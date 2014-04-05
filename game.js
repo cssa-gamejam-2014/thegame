@@ -1,4 +1,95 @@
+var TARGET_FRAMERATE=0.5,
+    camera = {
+        // distances in metres
+        // "top" and "right" are both screen edge locations in world form
+        left: -1,
+        top: 1,
+        // pixels per metre
+        zoom: 150,
+        // width and height in pixels
+        width: 0,
+        height: 0,
+    }
 
+function draw_person(ctx, outfit) {
+    var body=document.getElementById("body");
+    ctx.drawImage(body,0,0);
+
+    for (var key in outfit){
+        console.log(key+"_"+outfit[key]);
+        var object = document.getElementById(key+"_"+outfit[key])
+        ctx.drawImage(object,0,0);
+    }
+}
+
+function draw_frame_wrapper(ctx, elem) {
+    var prev_time = Date.now() / 1000
+    function inner() {
+        ct = Date.now() / 1000
+        dt = ct - prev_time
+        draw_frame(ctx, elem, dt)
+        prev_time = ct
+    }
+    return inner
+}
+
+function draw_frame(ctx, elem, dt) {
+    function to_screen(xy) {
+        // convert world coordinates into screen coordiantes
+        return [
+            (xy[0] - camera.left) * camera.zoom,
+            (camera.top - xy[1]) * camera.zoom
+        ]
+    }
+
+    // this code from
+    // https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
+    // everything except the clearRect call is unnecessary unless we have
+    // uncleared transforms, in which case clearrect's arguments will get
+    // transformed according to those transforms which we have applied (and we
+    // thus need to make a new "reset" transform)
+    // Store the current transformation matrix
+    // ctx.save()
+
+    // Use the identity matrix while clearing the canvas
+    // ctx.setTransform(1, 0, 0, 1, 0, 0)
+    ctx.clearRect(0, 0, camera.width, camera.height)
+    ctx.fillStyle = "#FF0000"
+    ctx.fillRect(0, 0, 100, 100)
+    draw_person(ctx, levels[4].generator())
+
+    // Restore the transform
+    // ctx.restore()
+}
+
+function on_resize_wrapper(ctx, elem) {
+    // I am a serious closure abuser
+    return function() {
+        // resize code
+        // make the canvas the right size
+        var elem = document.querySelector('canvas')
+        elem.width = elem.offsetWidth
+        elem.height = elem.offsetHeight
+        camera.width = elem.width
+        camera.height = elem.height
+
+        // make it so that y = 0 is always in the middle of the screen
+        camera.top = camera.height / camera.zoom / 2
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // initialisation code
+    var elem = document.querySelector('#gamecanvas')
+    var ctx = elem.getContext('2d')
+
+    on_resize = on_resize_wrapper(ctx, elem)
+    on_resize()
+    window.addEventListener('resize', on_resize, false)
+
+    window.setInterval(draw_frame_wrapper(ctx, elem), 1000 / TARGET_FRAMERATE)
+});
+/*
 $(document).ready(function(){
     // Draw a person
     function drawPerson(outfit, position){
@@ -28,201 +119,6 @@ $(document).ready(function(){
         }
     }
 
-    function getRandom(range){
-        return Math.floor((Math.random()*range));
-    }
-
-    colours = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
-
-    level0 = {
-        generator : function(){
-            person = []
-            
-            if (getRandom(2) == 1){
-                person['shirt'] = 'green';
-                person['pants'] = 'green';
-            } else {
-                person['shirt'] = 'blue';
-                person['pants'] = 'blue';
-            }
-            
-            
-            return person;
-        },
-        randgen : function(){
-            person = []
-            person['shirt'] = colours[getRandom(6)];
-            person['pants'] = colours[getRandom(6)];
-            person['hat'] = colours[getRandom(6)];
-            person['shoes'] = colours[getRandom(6)];
-            
-            return person;
-        },
-        validator : function(clothing){
-            if (clothing.shirt == 'blue' || clothing.shirt == 'green'){
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    
-    level1 = {
-        generator : function(){
-            person = []
-            
-            chanceOfWear = {hat: 80, shoes: 80}
-            var clothes = ['hat', 'pants', 'jacket', 'socks', 'shoes'];
-            clothes.forEach(function(entry){
-                if (getRandom(100) < chanceOfWear[entry]){
-                    person[entry] =  colours[getRandom(6)];
-                }
-            });
-            
-            if (getRandom(2) == 1){
-                person['shirt'] = 'green';
-                person['pants'] = 'green';
-            } else {
-                person['shirt'] = 'blue';
-                person['pants'] = 'blue';
-            }
-            
-            
-            return person;
-        },
-        randgen : function(){
-            person = []
-            person['shirt'] = colours[getRandom(6)];
-            person['pants'] = colours[getRandom(6)];
-            person['hat'] = colours[getRandom(6)];
-            person['shoes'] = colours[getRandom(6)];
-            
-            return person;
-        },
-        validator : function(clothing){
-            if (clothing.shirt == 'blue' || clothing.shirt == 'green'){
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    
-    level2 = {
-        generator : function(){
-            person = []
-            
-            chanceOfWear = {hat: 100, shirt: 80, pants: 100}
-            var clothes = ['hat', 'shirt', 'pants'];
-            clothes.forEach(function(entry){
-                if (getRandom(100) < chanceOfWear[entry]){
-                    person[entry] =  colours[getRandom(6)];
-                }
-            });
-            
-            person['shoes'] = person['hat'];
-            
-            return person;
-        },
-        randgen : function(){
-            person = []
-            
-            chanceOfWear = {hat: 80, shirt: 100, pants: 100, shoes: 100}
-            var clothes = ['hat', 'shirt', 'pants', 'shoes'];
-            clothes.forEach(function(entry){
-                if (getRandom(100) < chanceOfWear[entry]){
-                    person[entry] =  colours[getRandom(6)];
-                }
-            });
-            
-            return person;
-        },
-        validator : function(clothing){
-            if (clothing.shirt == 'blue' || clothing.shirt == 'green'){
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    
-    
-    
-    level3 = {
-        generator : function(){
-            person = []
-            
-            chanceOfWear = {hat: 60, shirt: 80, pants: 100}
-            var clothes = ['hat', 'shirt', 'pants'];
-            clothes.forEach(function(entry){
-                if (getRandom(100) < chanceOfWear[entry]){
-                    person[entry] =  colours[getRandom(6)];
-                }
-            });
-            
-            if (!person.hat){
-                person['shoes'] = colours[getRandom(6)];
-            }
-            
-            return person;
-        },
-        randgen : function(){
-            person = []
-            
-            chanceOfWear = {hat: 60, shirt: 100, pants: 100, shoes: 40}
-            var clothes = ['hat', 'shirt', 'pants', 'shoes'];
-            clothes.forEach(function(entry){
-                if (getRandom(100) < chanceOfWear[entry]){
-                    person[entry] =  colours[getRandom(6)];
-                }
-            });
-            
-            return person;
-        },
-        validator : function(clothing){
-            if ((clothing.hat && !clothing.pants) || (clothing.pants && clothing.hat)){
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    
-    level4 = {
-        generator : function(){
-            person = []
-            
-            var coloursUsed = colours.slice(0);
-            var clothes = ['hat', 'shirt', 'pants', 'shoes'];
-            clothes.forEach(function(entry){
-                var index = getRandom(coloursUsed.length);
-                person[entry] =  coloursUsed[index];
-                coloursUsed.splice(index, 1);
-            });
-            
-            if (!person.hat){
-                person['shoes'] = colours[getRandom(6)];
-            }
-            
-            return person;
-        },
-        randgen : function(){
-            person = []
-            
-            chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
-            var clothes = ['hat', 'shirt', 'pants', 'shoes'];
-            clothes.forEach(function(entry){
-                if (getRandom(100) < chanceOfWear[entry]){
-                    person[entry] =  colours[getRandom(6)];
-                }
-            });
-            
-            return person;
-        },
-        validator : function(clothing){
-            return false;
-        }
-    }
     
     var level = level4
 
@@ -247,4 +143,4 @@ $(document).ready(function(){
             drawChoice(level.randgen(), x);
         }
     }
-});
+});*/
