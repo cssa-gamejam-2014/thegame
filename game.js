@@ -3,7 +3,6 @@ $(document).ready(function(){
     // Draw a person
     function drawPerson(outfit, position){
         var c=document.getElementById("myCanvas");
-        console.log(c);
         var ctx=c.getContext("2d");
         var body=document.getElementById("body");
         var hat=document.getElementById("hat");
@@ -49,7 +48,6 @@ $(document).ready(function(){
         }
     }
 
-    console.log(document.getElementById("myCanvas"));
     drawPerson(level1.generator(), 1);
     drawPerson(level1.generator(), 2);
     drawPerson(level1.generator(), 3);
