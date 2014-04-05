@@ -188,7 +188,43 @@ $(document).ready(function(){
         }
     }
     
-    var level = level3
+    level4 = {
+        generator : function(){
+            person = []
+            
+            var coloursUsed = colours.slice(0);
+            var clothes = ['hat', 'shirt', 'pants', 'shoes'];
+            clothes.forEach(function(entry){
+                var index = getRandom(coloursUsed.length);
+                person[entry] =  coloursUsed[index];
+                coloursUsed.splice(index, 1);
+            });
+            
+            if (!person.hat){
+                person['shoes'] = colours[getRandom(6)];
+            }
+            
+            return person;
+        },
+        randgen : function(){
+            person = []
+            
+            chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
+            var clothes = ['hat', 'shirt', 'pants', 'shoes'];
+            clothes.forEach(function(entry){
+                if (getRandom(100) < chanceOfWear[entry]){
+                    person[entry] =  colours[getRandom(6)];
+                }
+            });
+            
+            return person;
+        },
+        validator : function(clothing){
+            return false;
+        }
+    }
+    
+    var level = level4
 
     for (var x=1; x<11; x++){
         drawPerson(level.generator(), x);
