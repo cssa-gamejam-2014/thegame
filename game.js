@@ -1,4 +1,4 @@
-var TARGET_FRAMERATE=0.5,
+var TARGET_FRAMERATE=100,
     camera = {
         // distances in metres
         // "top" and "right" are both screen edge locations in world form
@@ -9,14 +9,33 @@ var TARGET_FRAMERATE=0.5,
         // width and height in pixels
         width: 0,
         height: 0,
+    },
+    people = [
+    ],
+    last_person_spawn_time = 0,
+    spawn_rate = 0.5,
+    // MAXIMUM STRENGTH
+    // MAXIMUM ARMOUR
+    maximum_speed = 100
+
+function drawChoice(outfit, position){
+    var c=document.getElementById("chooseCanvas");
+    var ctx=c.getContext("2d");
+    var posOffset = (position-1)*200+12
+    
+    for (var key in outfit){
+        console.log(key+"_"+outfit[key]);
+        var object = document.getElementById(key+"_"+outfit[key])
+        ctx.drawImage(object,posOffset,10);
     }
+}
 
 function draw_person(ctx, outfit) {
     var body=document.getElementById("body");
     ctx.drawImage(body,0,0);
 
     for (var key in outfit){
-        console.log(key+"_"+outfit[key]);
+        if (key == "left") continue
         var object = document.getElementById(key+"_"+outfit[key])
         ctx.drawImage(object,0,0);
     }
@@ -54,9 +73,39 @@ function draw_frame(ctx, elem, dt) {
     // Use the identity matrix while clearing the canvas
     // ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, camera.width, camera.height)
-    ctx.fillStyle = "#FF0000"
-    ctx.fillRect(0, 0, 100, 100)
-    draw_person(ctx, levels[4].generator())
+
+    // move everyone forward
+    for (var i = 0; i < people.length; i++) {
+        people[i].left -= maximum_speed * dt
+        if (people[i].left < 0) {
+            people.splice(i, 1)
+        }
+    }
+    var ct = Date.now() / 1000
+    // LETS GET THIS PARTY SPAWNED
+    if ((ct - last_person_spawn_time) > 1/spawn_rate) {
+        last_person_spawn_time = ct
+        var new_person = levels[4].generator()
+        new_person.left = elem.width
+        people.push(new_person)
+    }
+
+    // draw the people in our queue
+    for (var i = 0; i < people.length; i++) {
+        ctx.save()
+        ctx.translate(people[i].left, elem.height - 200)
+        draw_person(ctx, people[i])
+        ctx.restore()
+    }
+
+    var groundfloor = document.getElementById("building_ground")
+    var windows = document.getElementById("building_windows")
+    // Draw the upper levels of the building
+    for (var offset = elem.height - windows.height; offset > -windows.height; offset -= windows.height) {
+        ctx.drawImage(windows, 0, offset)
+    }
+    // Draw the ground floor of the building
+    ctx.drawImage(groundfloor, 0, elem.height - groundfloor.height)
 
     // Restore the transform
     // ctx.restore()
@@ -67,14 +116,13 @@ function on_resize_wrapper(ctx, elem) {
     return function() {
         // resize code
         // make the canvas the right size
-        var elem = document.querySelector('canvas')
         elem.width = elem.offsetWidth
         elem.height = elem.offsetHeight
         camera.width = elem.width
         camera.height = elem.height
 
-        // make it so that y = 0 is always in the middle of the screen
-        camera.top = camera.height / camera.zoom / 2
+        // make it so that y = 0 is always at the bottom of the screen
+        camera.top = camera.height / camera.zoom
     }
 }
 
@@ -88,7 +136,32 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', on_resize, false)
 
     window.setInterval(draw_frame_wrapper(ctx, elem), 1000 / TARGET_FRAMERATE)
+
+    // Code for drawing the choices
+    // XXX FIX THIS AND THE LEVEL SELECTION CODE IN THE LOOP
+    var c=document.getElementById("chooseCanvas");
+    c.width = c.offsetWidth
+    c.height = c.offsetHeight
+    level = levels[4]
+
+    valid1 = getRandom(10)+1;
+    valid2 = getRandom(10)+1;
+    while (valid2 == valid1){
+        valid2 = getRandom(10)+1;
+    }
+    for (var x=1; x<11; x++){
+        if (x == valid1 || x == valid2){
+            drawChoice(level.generator(), x);
+        } else {
+            var invalid = level.randgen();
+            while (level.validator(invalid)){
+                invalid = level.randgen();
+            }
+            drawChoice(level.randgen(), x);
+        }
+    }
 });
+
 /*
 $(document).ready(function(){
     // Draw a person

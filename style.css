@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+#gamecanvas {
+    width: 100%;
+    height: 350px;
+}
+#chooseCanvas {
+    width: 100%;
+    height: 220px;
+}

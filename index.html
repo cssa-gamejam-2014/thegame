@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Let's play dress up!</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-</head>
+    <head>
+        <title>Let's play dress up!</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="game.js"></script>
+        <script src="levels.js"></script>
+        <link rel=stylesheet href=style.css>
+    </head>
+    <body>
+        <canvas id=gamecanvas></canvas>
+        <canvas id=chooseCanvas></canvas>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="game.js"></script>
-<script src="levels.js"></script>
-<body>
-
-<canvas id=gamecanvas width=500 height=500></canvas>
-
-    <div style="display: none;">
-        <img id='body' src='graphics/stick/stick_figure.png'>
-        <img id='hat' src='graphics/stick/hat.png'>
-        <img id='pants' src='graphics/stick/pants.png'>
-        <img id='shirt' src='graphics/stick/shirt.png'>
-        <img id='shoes' src='graphics/stick/shoes.png'>
-        <img id='hat_orange' src='graphics/stick/hat_orange.png'>
-        <img id='hat_green' src='graphics/stick/hat_green.png'>
-        <img id='hat_blue' src='graphics/stick/hat_blue.png'>
-        <img id='hat_yellow' src='graphics/stick/hat_yellow.png'>
-        <img id='hat_red' src='graphics/stick/hat_red.png'>
-        <img id='hat_purple' src='graphics/stick/hat_purple.png'>
-        <img id='pants_orange' src='graphics/stick/pants_orange.png'>
-        <img id='pants_green' src='graphics/stick/pants_green.png'>
-        <img id='pants_blue' src='graphics/stick/pants_blue.png'>
-        <img id='pants_yellow' src='graphics/stick/pants_yellow.png'>
-        <img id='pants_red' src='graphics/stick/pants_red.png'>
-        <img id='pants_purple' src='graphics/stick/pants_purple.png'>
-        <img id='shirt_orange' src='graphics/stick/shirt_orange.png'>
-        <img id='shirt_green' src='graphics/stick/shirt_green.png'>
-        <img id='shirt_blue' src='graphics/stick/shirt_blue.png'>
-        <img id='shirt_yellow' src='graphics/stick/shirt_yellow.png'>
-        <img id='shirt_red' src='graphics/stick/shirt_red.png'>
-        <img id='shirt_purple' src='graphics/stick/shirt_purple.png'>
-        <img id='shoes_orange' src='graphics/stick/shoes_orange.png'>
-        <img id='shoes_green' src='graphics/stick/shoes_green.png'>
-        <img id='shoes_blue' src='graphics/stick/shoes_blue.png'>
-        <img id='shoes_yellow' src='graphics/stick/shoes_yellow.png'>
-        <img id='shoes_red' src='graphics/stick/shoes_red.png'>
-        <img id='shoes_purple' src='graphics/stick/shoes_purple.png'>
-    </div>
-</body>
+        <div style="display: none;">
+            <img id='body' src='graphics/stick/stick_figure.png'>
+            <img id='hat' src='graphics/stick/hat.png'>
+            <img id='pants' src='graphics/stick/pants.png'>
+            <img id='shirt' src='graphics/stick/shirt.png'>
+            <img id='shoes' src='graphics/stick/shoes.png'>
+            <img id='hat_orange' src='graphics/stick/hat_orange.png'>
+            <img id='hat_green' src='graphics/stick/hat_green.png'>
+            <img id='hat_blue' src='graphics/stick/hat_blue.png'>
+            <img id='hat_yellow' src='graphics/stick/hat_yellow.png'>
+            <img id='hat_red' src='graphics/stick/hat_red.png'>
+            <img id='hat_purple' src='graphics/stick/hat_purple.png'>
+            <img id='pants_orange' src='graphics/stick/pants_orange.png'>
+            <img id='pants_green' src='graphics/stick/pants_green.png'>
+            <img id='pants_blue' src='graphics/stick/pants_blue.png'>
+            <img id='pants_yellow' src='graphics/stick/pants_yellow.png'>
+            <img id='pants_red' src='graphics/stick/pants_red.png'>
+            <img id='pants_purple' src='graphics/stick/pants_purple.png'>
+            <img id='shirt_orange' src='graphics/stick/shirt_orange.png'>
+            <img id='shirt_green' src='graphics/stick/shirt_green.png'>
+            <img id='shirt_blue' src='graphics/stick/shirt_blue.png'>
+            <img id='shirt_yellow' src='graphics/stick/shirt_yellow.png'>
+            <img id='shirt_red' src='graphics/stick/shirt_red.png'>
+            <img id='shirt_purple' src='graphics/stick/shirt_purple.png'>
+            <img id='shoes_orange' src='graphics/stick/shoes_orange.png'>
+            <img id='shoes_green' src='graphics/stick/shoes_green.png'>
+            <img id='shoes_blue' src='graphics/stick/shoes_blue.png'>
+            <img id='shoes_yellow' src='graphics/stick/shoes_yellow.png'>
+            <img id='shoes_red' src='graphics/stick/shoes_red.png'>
+            <img id='shoes_purple' src='graphics/stick/shoes_purple.png'>
+            <img id='building_ground' src='graphics/building/bankgroundfloor.png'>
+            <img id='building_windows' src='graphics/building/bankwindows.png'>
+        </div>
+    </body>
 </html> 
