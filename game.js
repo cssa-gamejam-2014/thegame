@@ -4,11 +4,16 @@ $(document).ready(function(){
     function drawPerson(outfit, position){
         var c=document.getElementById("myCanvas");
         var ctx=c.getContext("2d");
+        var posOffset = (position-1)*200+12
+        
         var body=document.getElementById("body");
+        ctx.drawImage(body,posOffset,10);
+        
+        for (var key in outfit){
+            ctx.drawImage(document.getElementById(key+"_"+outfit[key]),posOffset,10);
+        }
         var hat=document.getElementById("hat");
         
-        posOffset = (position-1)*200+12
-        ctx.drawImage(body,posOffset,10);
         ctx.drawImage(hat,posOffset,10);
     }
 
