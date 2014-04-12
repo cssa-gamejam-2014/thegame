@@ -1,16 +1,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Let's play dress up!</title>
+        <title>Dress Code: The Game</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="js/jquery-1.10.2.js"></script>
         <script src="game.js"></script>
         <script src="levels.js"></script>
         <link rel=stylesheet href=style.css>
+		<link href="css/ui-lightness/jquery-ui-1.10.4.css" rel="stylesheet">
+		<script src="js/jquery-ui-1.10.4.js"></script>
     </head>
     <body>
+		<img src="assets/header.png" style="display: block; margin-left:auto; margin-right:auto;">
+		<div id="storytext"></div>
+		
+		<div style='padding-bottom: 50px'>
         <canvas id=gamecanvas></canvas>
-        <canvas id=chooseCanvas></canvas>
+        </div>
+		<div style="display: block; margin: 0px auto;">
+        <canvas id=chooseCanvas_0 choice=0 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_1 choice=1 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_2 choice=2 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_3 choice=3 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_4 choice=4 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_5 choice=5 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_6 choice=6 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_7 choice=7 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_8 choice=8 class='chooseCanvas' width=175 height=200></canvas>
+        <canvas id=chooseCanvas_9 choice=9 class='chooseCanvas' width=175 height=200></canvas>
+        </div>
+        
+        <div>
+        <button id="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style="float: left; margin-left: 120px; margin-top: 80px;"><span class="ui-button-text">Go back</span></button>
+        <button id="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style="float: right; margin-right: 120px; margin-top: 80px;"><span class="ui-button-text">Next</span></button>
+        </div>
 
         <div style="display: none;">
             <img id='body' src='graphics/stick/stick_figure.png'>
