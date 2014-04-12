@@ -28,6 +28,31 @@ function drawChoice(outfit, position){
     }
 }
 
+function drawCharacter(outfit, position){
+    var c=document.getElementById("character_"+position);
+    var ctx=c.getContext("2d");
+	
+    var body=document.getElementById("body");
+    ctx.drawImage(body,0,0);
+	
+    for (var key in outfit){
+        var object = document.getElementById(key+"_"+outfit[key]);
+        ctx.drawImage(object, 0, 0);
+    }
+}
+
+function clearChoice(position){
+	var c=document.getElementById("chooseCanvas_"+position);
+	var ctx=c.getContext("2d");
+	ctx.clear();
+}
+
+function clearCharacter(position){
+	var c=document.getElementById("character_"+position);
+	var ctx=c.getContext("2d");
+	ctx.clear();
+}
+
 function draw_person(ctx, outfit) {
     var body=document.getElementById("body");
     ctx.drawImage(body,0,0);
@@ -65,6 +90,7 @@ function draw_frame_wrapper(ctx, elem) {
     return inner;
 }
 
+var lastlevel = 0;
 function draw_frame(ctx, elem, dt) {
     function to_screen(xy) {
         // convert world coordinates into screen coordiantes
@@ -86,6 +112,12 @@ function draw_frame(ctx, elem, dt) {
     // Use the identity matrix while clearing the canvas
     // ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, camera.width, camera.height);
+	
+	// if the level has changed, clear all people
+	if (currentLevel != lastlevel){
+		people = [];
+		lastlevel = currentLevel;
+	}
 
     // move everyone forward
     for (var i = 0; i < people.length; i++) {
@@ -98,7 +130,7 @@ function draw_frame(ctx, elem, dt) {
     // LETS GET THIS PARTY SPAWNED
     if ((ct - last_person_spawn_time) > 1/spawn_rate) {
         last_person_spawn_time = ct;
-        var new_person = levels[4].generator();
+        var new_person = levels[currentLevel].generator();
         new_person.left = elem.width;
         people.push(new_person);
     }
@@ -142,8 +174,116 @@ function on_resize_wrapper(ctx, elem) {
 var selected = [];
 
 var choices = [];
-var correct = [11, 11];
-var inSelection = false;
+var correct = [];
+
+function selectChoice(id){
+	$("#chooseCanvas_"+id).addClass('selected');
+	
+	// if building up selection
+	if (selected.length < 2){
+		selected.push(id);
+		drawCharacter(choices[id], selected.length);
+	// if already selected 2 characters
+	} else {
+		deselectChoice(selected[1]);
+		
+		selected[1] = id;
+		drawCharacter(choices[id], selected.length);
+	}
+	
+	// Red rectangle
+	var c=document.getElementById("chooseCanvas_"+id);
+	var ctx=c.getContext("2d");
+	
+	ctx.beginPath();
+	ctx.lineWidth="5";
+	ctx.strokeStyle="red";
+	ctx.rect(5,5,160,190);
+	ctx.stroke();
+	
+	if (selected.length == 2){
+		$("#next").removeClass("ui-state-disabled");
+	}
+}
+
+function deselectChoice(id){
+	
+	// remove selection
+	var index = selected.indexOf(id);
+	
+	
+	if (index > -1) {
+		selected.splice(index, 1);
+	}
+	
+	$("#chooseCanvas_"+id).removeClass('selected');
+	
+	// clear choice selection
+	var c=document.getElementById("chooseCanvas_"+id);
+	var ctx=c.getContext("2d");
+	ctx.clear();
+	drawChoice(choices[id], id);
+	
+	// redraw characters
+	for (var x = 1; x < 3; x++){
+		// clear choice selection
+		var c=document.getElementById("character_"+x);
+		var ctx=c.getContext("2d");
+		ctx.clear();
+	}
+	for (var x = 0; x < selected.length; x++){
+		drawCharacter(choices[selected[x]], x+1);
+	}
+	
+	$("#next").addClass("ui-state-disabled");
+}
+
+var frameDrawer;
+var currentLevel = 0;
+var protagonist = escape(window.location.hash.replace("#", ""));
+var storyTime = true;
+
+function setUpGameScreen(){
+	choices = [];
+	correct = [];
+	selected = [];
+	
+	for (var x=0; x<10; x++){
+		clearChoice(x);
+	}
+	for (var x=1; x<3; x++){
+		clearCharacter(x);
+	}
+
+	level = levels[currentLevel];
+	
+	correct.push(getRandom(10));
+	correct.push(getRandom(10));
+	console.log(correct[0] +" and " + correct[1] + " are correct");
+	while (correct[0] == correct[1]){
+		correct[1] = getRandom(10)+1;
+	}
+	for (var x=0; x<10; x++){
+		if (x == correct[0] || x == correct[1]){
+			newperson = level.generator();
+			choices.push(newperson);
+			drawChoice(newperson, x);
+		} else {
+			var invalid = level.randgen();
+			while (level.validator(invalid)){
+				invalid = level.randgen();
+			}
+			choices.push(invalid);
+			drawChoice(invalid, x);
+		}
+	}
+}
+
+function setUpStoryScreen(){
+	story = stories[currentLevel].replace("%PROT%", protagonist);
+	
+	$('#storyscreen').html(story);
+}
 
 $(document).ready(function(){
 	
@@ -151,73 +291,76 @@ $(document).ready(function(){
 	$('.chooseCanvas').click(function(){
 		var id = $(this).attr('choice');
 		
-		var c=document.getElementById("chooseCanvas_"+id);
-		var ctx=c.getContext("2d");
-		
 		if ($(this).hasClass('selected')){
-			// remove selection
-			var index = selected.indexOf(id);
-			if (index > -1) {
-				selected.splice(index, 1);
-			}
-			
-			$(this).removeClass('selected');
-			
-			ctx.clear();
-			drawChoice(choices[id], id);
+			deselectChoice(id);
 		} else {
-			$(this).addClass('selected');
-			selected.push(id);
-			
-			// Red rectangle
-			ctx.beginPath();
-			ctx.lineWidth="5";
-			ctx.strokeStyle="red";
-			ctx.rect(5,5,160,190);
-			ctx.stroke();
+			selectChoice(id);
 		}
 	});
 	
+	$('#next').click(function(){
+		console.log("I got clicked "+storyTime+selected.length);
+		if (storyTime){
+			$('#storyscreen').slideUp(function(){
+				$('#gamescreen').slideDown();
+			});
+			storyTime = false;
+			$('#back').css('display', 'inline');
+			$('#nexttext').text('Walk in the door');
+			$("#next").addClass("ui-state-disabled");
+		// Clicked to walk in the door
+		} else {
+			if (selected.length != 2){
+				return 0;
+			}
+			if (correct.indexOf(parseInt(selected[0])) != -1 && correct.indexOf(parseInt(selected[1])) != -1){
+				// Picked correctly. Increment the level and hand over to story.
+				currentLevel++;
+				
+				$('#gamescreen').slideUp(function(){
+					setUpStoryScreen();
+					setUpGameScreen();
+					$('#storyscreen').slideDown(function(){
+						storyTime = true;
+						$('#back').hide();
+						$('#nexttext').text('Go to the costume store');
+					});
+				});
+				
+			} else {
+				console.log("You got it wrong!");
+			}
+		}
+	});
+	
+	$('#back').click(function(){
+		if (!storyTime){
+			$('#gamescreen').slideUp(function(){
+				$('#storyscreen').slideDown();
+			});
+			storyTime = true;
+			$('#back').hide();
+			$("#next").removeClass("ui-state-disabled");
+		}
+		console.log("clicked back when it was story time");
+	});
+	
+	$('#protagonist').text(protagonist);
+	
+	setUpStoryScreen();
+	setUpGameScreen();
+	
+	// Animation initialisation
+	var elem = document.querySelector('#gamecanvas');
+	var ctx = elem.getContext('2d');
 
-    // Code for drawing the choices
-    // XXX FIX THIS AND THE LEVEL SELECTION CODE IN THE LOOP
-    
-	//var c=document.getElementById("chooseCanvas");
-    //c.width = c.offsetWidth
-    //c.height = c.offsetHeight
-    level = levels[4];
+	on_resize = on_resize_wrapper(ctx, elem);
+	on_resize();
+	var resizeListener = window.addEventListener('resize', on_resize, false);
 
-    correct[0] = getRandom(10)+1;
-    correct[1] = getRandom(10)+1;
-    while (correct[0] == correct[1]){
-        valid2 = getRandom(10)+1;
-    }
-    for (var x=0; x<10; x++){
-        if (x == correct[0] || x == correct[1]){
-			newperson = level.generator();
-			choices.push(newperson);
-            drawChoice(newperson, x);
-        } else {
-            var invalid = level.randgen();
-            while (level.validator(invalid)){
-                invalid = level.randgen();
-            }
-			choices.push(invalid);
-            drawChoice(invalid, x);
-        }
-    }
-    
-    // Animation initialisation
-    var elem = document.querySelector('#gamecanvas');
-    var ctx = elem.getContext('2d');
-
-    on_resize = on_resize_wrapper(ctx, elem);
-    on_resize();
-    var resizeListener = window.addEventListener('resize', on_resize, false);
-
-    var framesDrawer = window.setInterval(draw_frame_wrapper(ctx, elem), 1000 / TARGET_FRAMERATE);
-    
-    inSelection = true;
+	framesDrawer = window.setInterval(draw_frame_wrapper(ctx, elem), 1000 / TARGET_FRAMERATE);
+	
+	inSelection = true;
 });
 
 /*

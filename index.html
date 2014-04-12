@@ -17,22 +17,38 @@
 		<div style='padding-bottom: 50px'>
         <canvas id=gamecanvas></canvas>
         </div>
-		<div style="display: block; margin: 0px auto;">
-        <canvas id=chooseCanvas_0 choice=0 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_1 choice=1 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_2 choice=2 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_3 choice=3 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_4 choice=4 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_5 choice=5 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_6 choice=6 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_7 choice=7 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_8 choice=8 class='chooseCanvas' width=175 height=200></canvas>
-        <canvas id=chooseCanvas_9 choice=9 class='chooseCanvas' width=175 height=200></canvas>
+        
+        <div id='content'>
+        <div id='gamescreen' style='display: none;'>
+			
+			<div id='choices' style="display: block; margin: 0px auto;">
+			<canvas id=chooseCanvas_0 choice=0 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_1 choice=1 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_2 choice=2 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_3 choice=3 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_4 choice=4 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_5 choice=5 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_6 choice=6 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_7 choice=7 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_8 choice=8 class='chooseCanvas' width=175 height=200></canvas>
+			<canvas id=chooseCanvas_9 choice=9 class='chooseCanvas' width=175 height=200></canvas>
+			</div>
+			
+			<div id='characters' style="width: 400px; margin: 0px auto;">
+			<canvas id='character_1' width=175 height=200></canvas>
+			<canvas id='character_2' width=175 height=200></canvas>
+			</br>
+			<div id='protagonist' class='nameplate'>Jarrah</div>
+			<div class='nameplate'>Jed</div>
+			</div>
+        </div>
+        <div id='storyscreen'>
+        </div>
         </div>
         
         <div>
-        <button id="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style="float: left; margin-left: 120px; margin-top: 80px;"><span class="ui-button-text">Go back</span></button>
-        <button id="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style="float: right; margin-right: 120px; margin-top: 80px;"><span class="ui-button-text">Next</span></button>
+        <button id='back' style="display: none;" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style="float: left; margin-left: 120px; margin-top: 30px;"><span class="ui-button-text" id="backtext">Go back to the story</span></button>
+        <button id='next' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style="float: right; margin-right: 120px; margin-top: 30px;"><span class="ui-button-text"  id="nexttext">Go to the costume store</span></button>
         </div>
 
         <div style="display: none;">

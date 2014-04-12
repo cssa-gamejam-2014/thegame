@@ -9,3 +9,19 @@ body {
 }
 .chooseCanvas {
 }
+#content {
+    width: 100%;
+    height: 450px;
+}
+#gamescreen {
+}
+#storyscreen {
+	margin-left: 4px;
+	width: 40%;
+	margin: 0px auto;
+}
+#characters .nameplate {
+	display: inline-block;
+	width: 175px;
+	text-align: center;
+}
