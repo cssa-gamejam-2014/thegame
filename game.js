@@ -240,7 +240,7 @@ function deselectChoice(id){
 }
 
 var frameDrawer;
-var currentLevel = 8;
+var currentLevel = 0;
 var setupinfo = false
 var protagonist = escape(window.location.hash.replace("#", ""));
 var storyTime = true;
