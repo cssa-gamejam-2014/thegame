@@ -262,7 +262,7 @@ levels = [
     }
 },
 
-// LEVEL SIX
+// LEVEL SEVEN
 {
     generator : function(){
         person = []
@@ -281,7 +281,19 @@ levels = [
     },
     randgen : function(){
         person = []
-
+ckClothes.forEach(function(entry){
+			if (!clothing[entry])
+				return false;
+			thisIndex = colours.indexOf(clothing[entry]);
+			if (!(lastIndex+1%colours.length == thisIndex)){
+				return false;
+			}
+			lastIndex = thisIndex;
+		});
+		
+		return true;
+    }
+},
         chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
         var clothes = ['hat', 'shirt', 'pants', 'shoes'];
 		
@@ -302,6 +314,8 @@ levels = [
 		lastIndex = colours.indexOf(clothing.hat);
 		checkClothes = ['shirt', 'pants', 'shoes'];
 		checkClothes.forEach(function(entry){
+			if (!clothing[entry])
+				return false;
 			thisIndex = colours.indexOf(clothing[entry]);
 			if (!(lastIndex+1%colours.length == thisIndex)){
 				return false;
@@ -313,7 +327,7 @@ levels = [
     }
 },
 
-// LEVEL SEVEN
+// LEVEL EIGHT
 {
     generator : function(){
         person = []
@@ -358,7 +372,7 @@ levels = [
     }
 },
 
-// LEVEL EIGHT
+// LEVEL NINE
 {
     generator : function(){
 		console.log("trying to generate");
@@ -402,6 +416,74 @@ levels = [
 		return (clothing.shirt == 'yellow' || clothing.hat == 'yellow' || clothing.pants == 'yellow' || clothing.shoes == 'yellow') && 
 			(clothing.shirt == 'red' || clothing.hat == 'red' || clothing.pants == 'red' || clothing.shoes == 'red');
     }
+},
+
+// LEVEL TEN
+{
+    generator : function(){
+        person = []
+
+        start = getRandom(colours.length);
+		
+		person.hat = colours[start];
+		start = start+1%colours.length;
+		person.shirt = colours[start];
+		start = start+1%colours.length;
+		person.pants = colours[start];
+		start = start+1%colours.length;
+		person.shoes = colours[start];
+
+        return person;
+    },
+    randgen : function(){
+        person = []
+ckClothes.forEach(function(entry){
+			if (!clothing[entry])
+				return false;
+			thisIndex = colours.indexOf(clothing[entry]);
+			if (!(lastIndex+1%colours.length == thisIndex)){
+				return false;
+			}
+			lastIndex = thisIndex;
+		});
+		
+		return true;
+    }
+},
+        chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
+        var clothes = ['hat', 'shirt', 'pants', 'shoes'];
+		
+		
+        var coloursUsed = colours.slice(0);
+        clothes.forEach(function(entry){
+            if (getRandom(100) < chanceOfWear[entry]){
+				var index = getRandom(coloursUsed.length);
+				person[entry] =  coloursUsed[index];
+				coloursUsed.splice(index, 1);
+            }
+        });
+
+        return person;
+    },
+    validator : function(clothing){
+		
+		lastIndex = colours.indexOf(clothing.hat);
+		checkClothes = ['shirt', 'pants', 'shoes'];
+		checkClothes.forEach(function(entry){
+			if (!clothing[entry])
+				return false;
+			thisIndex = colours.indexOf(clothing[entry]);
+			if (!(lastIndex+1%colours.length == thisIndex)){
+				return false;
+			}
+			lastIndex = thisIndex;
+		});
+		
+		return true;
+    }.
+    setup : function(){
+		
+	}
 }];
 
 stories = [
