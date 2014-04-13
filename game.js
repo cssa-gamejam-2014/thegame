@@ -1,4 +1,4 @@
-var TARGET_FRAMERATE=100,
+var TARGET_FRAMERATE=10,
 camera = {
 	// distances in metres
 	// "top" and "right" are both screen edge locations in world form
@@ -241,7 +241,12 @@ function deselectChoice(id){
 var frameDrawer;
 var currentLevel = 0;
 var protagonist = escape(window.location.hash.replace("#", ""));
+if (protagonist == "Jarrah"){
+	currentLevel = 7;
+}
 var storyTime = true;
+var finishedLevel = false;
+var currentContainer = "storyscreen";
 
 function setUpGameScreen(){
 	choices = [];
@@ -281,8 +286,23 @@ function setUpGameScreen(){
 
 function setUpStoryScreen(){
 	story = stories[currentLevel].replace("%PROT%", protagonist);
+	failure = failures[0].replace("%PROT%", protagonist);
+	success = successes[currentLevel].replace("%PROT%", protagonist);
 	
 	$('#storyscreen').html(story);
+	$('#failurescreen').html(failure);
+	$('#successscreen').html(success);
+}
+
+function endTheGame(){
+	clearInterval(framesDrawer);
+	$('#'+currentContainer).slideUp(function(){
+		$('#successscreen').slideDown(function(){
+			$('#successscreen').html("That's the last level so far. You're good at this!");
+			$("#next").addClass("ui-state-disabled");
+			$("#back").addClass("ui-state-disabled");
+		});
+	});
 }
 
 $(document).ready(function(){
@@ -301,49 +321,89 @@ $(document).ready(function(){
 	$('#next').click(function(){
 		console.log("I got clicked "+storyTime+selected.length);
 		if (storyTime){
-			$('#storyscreen').slideUp(function(){
+			$('#'+currentContainer).slideUp(function(){
+				currentContainer = 'gamescreen';
+				
+				// redraw game screen to fix up Chrome
+				for (var x=0; x<10; x++){
+					drawChoice(choices[x], x);
+				}
 				$('#gamescreen').slideDown();
 			});
 			storyTime = false;
 			$('#back').css('display', 'inline');
 			$('#nexttext').text('Walk in the door');
 			$("#next").addClass("ui-state-disabled");
+		// We successfully finished the level
+		} else if (finishedLevel){
+			
+			if (currentLevel+1 >= levels.length){
+				endTheGame();
+				return;
+			}
+			// Progress to next level
+			currentLevel++;
+			
+			
+			$('#successscreen').slideUp(function(){
+				setUpStoryScreen();
+				setUpGameScreen();
+				currentContainer = 'storyscreen';
+				storyTime = true;
+				$('#back').hide();
+				$('#storyscreen').slideDown(function(){
+					$('#nexttext').text('Go to the costume store');
+				});
+			});
+			finishedLevel = false;
 		// Clicked to walk in the door
 		} else {
 			if (selected.length != 2){
 				return 0;
 			}
 			if (correct.indexOf(parseInt(selected[0])) != -1 && correct.indexOf(parseInt(selected[1])) != -1){
-				// Picked correctly. Increment the level and hand over to story.
-				currentLevel++;
 				
 				$('#gamescreen').slideUp(function(){
-					setUpStoryScreen();
-					setUpGameScreen();
-					$('#storyscreen').slideDown(function(){
-						storyTime = true;
-						$('#back').hide();
-						$('#nexttext').text('Go to the costume store');
+					currentContainer = 'successscreen';
+					finishedLevel = true;
+					$('#back').hide();
+					$('#successscreen').slideDown(function(){
+						$('#nexttext').text('Leave the building');
 					});
 				});
 				
+				
 			} else {
-				console.log("You got it wrong!");
+				// Player got the costumes wrong
+				$('#gamescreen').slideUp(function(){
+					setUpGameScreen();
+					currentContainer = 'failurescreen';
+					$('#failurescreen').slideDown(function(){
+						storyTime = true;
+						$('#nexttext').text('Go to the costume store');
+					});
+				});
 			}
 		}
 	});
 	
 	$('#back').click(function(){
 		if (!storyTime){
-			$('#gamescreen').slideUp(function(){
+			$('#'+currentContainer).slideUp(function(){
 				$('#storyscreen').slideDown();
 			});
 			storyTime = true;
 			$('#back').hide();
 			$("#next").removeClass("ui-state-disabled");
+		} else {
+			console.log("clicked back when it was story time");
 		}
-		console.log("clicked back when it was story time");
 	});
+	
+	// Handle navigations a bit nicer
+	$(window).unload(function() {
+		clearInterval(framesDrawer);
+	}); 
 	
 	$('#protagonist').text(protagonist);
 	

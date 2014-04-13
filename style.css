@@ -20,6 +20,18 @@ body {
 	width: 40%;
 	margin: 0px auto;
 }
+#failurescreen {
+	margin-left: 4px;
+	width: 40%;
+	margin: 0px auto;
+	display: none;
+}
+#successscreen {
+	margin-left: 4px;
+	width: 40%;
+	margin: 0px auto;
+	display: none;
+}
 #characters .nameplate {
 	display: inline-block;
 	width: 175px;
