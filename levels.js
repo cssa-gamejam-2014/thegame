@@ -244,6 +244,7 @@ levels = [
         return person;
     },
     randgen : function(){
+		
         person = []
 
         chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
@@ -265,39 +266,33 @@ levels = [
 // LEVEL SEVEN
 {
     generator : function(){
+		console.log("starting up");
+		
         person = []
 
         start = getRandom(colours.length);
 		
 		person.hat = colours[start];
-		start = start+1%colours.length;
+		start = (start+1)%colours.length;
+		console.log(start);
 		person.shirt = colours[start];
-		start = start+1%colours.length;
+		start = (start+1)%colours.length;
+		console.log(start);
 		person.pants = colours[start];
-		start = start+1%colours.length;
+		start = (start+1)%colours.length;
+		console.log(start);
 		person.shoes = colours[start];
 
+		console.log(person);
+		
         return person;
     },
     randgen : function(){
+		console.log("generating random");
         person = []
-ckClothes.forEach(function(entry){
-			if (!clothing[entry])
-				return false;
-			thisIndex = colours.indexOf(clothing[entry]);
-			if (!(lastIndex+1%colours.length == thisIndex)){
-				return false;
-			}
-			lastIndex = thisIndex;
-		});
-		
-		return true;
-    }
-},
         chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
         var clothes = ['hat', 'shirt', 'pants', 'shoes'];
-		
-		
+				
         var coloursUsed = colours.slice(0);
         clothes.forEach(function(entry){
             if (getRandom(100) < chanceOfWear[entry]){
@@ -310,6 +305,8 @@ ckClothes.forEach(function(entry){
         return person;
     },
     validator : function(clothing){
+		console.log("validating");
+		return false;
 		
 		lastIndex = colours.indexOf(clothing.hat);
 		checkClothes = ['shirt', 'pants', 'shoes'];
@@ -437,19 +434,6 @@ ckClothes.forEach(function(entry){
     },
     randgen : function(){
         person = []
-ckClothes.forEach(function(entry){
-			if (!clothing[entry])
-				return false;
-			thisIndex = colours.indexOf(clothing[entry]);
-			if (!(lastIndex+1%colours.length == thisIndex)){
-				return false;
-			}
-			lastIndex = thisIndex;
-		});
-		
-		return true;
-    }
-},
         chanceOfWear = {hat: 100, shirt: 100, pants: 100, shoes: 100}
         var clothes = ['hat', 'shirt', 'pants', 'shoes'];
 		
@@ -480,7 +464,7 @@ ckClothes.forEach(function(entry){
 		});
 		
 		return true;
-    }.
+    },
     setup : function(){
 		
 	}

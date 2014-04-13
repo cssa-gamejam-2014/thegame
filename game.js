@@ -239,11 +239,8 @@ function deselectChoice(id){
 }
 
 var frameDrawer;
-var currentLevel = 0;
+var currentLevel = 5;
 var protagonist = escape(window.location.hash.replace("#", ""));
-if (protagonist == "Jarrah"){
-	currentLevel = 7;
-}
 var storyTime = true;
 var finishedLevel = false;
 var currentContainer = "storyscreen";
