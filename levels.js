@@ -81,6 +81,7 @@ levels = [
         person = []
 
         person['hat'] = colours[getRandom(6)];
+        person['shoes'] = colours[getRandom(6)];
         if (getRandom(2) == 1){
             person['shirt'] = 'green';
             person['pants'] = 'green';
@@ -97,6 +98,7 @@ levels = [
         person['hat'] = colours[getRandom(6)];
         person['shirt'] = colours[getRandom(6)];
         person['pants'] = colours[getRandom(6)];
+        person['shoes'] = colours[getRandom(6)];
 
         return person;
     },
@@ -535,13 +537,13 @@ levels = [
 }];
 
 stories = [
-	"<h1>Chapter One: The Odd Job</h1><p>\"This has to be the oddest job we've been given, %PROT%.\"</p> <p>Jed was certainly right. As private investigators, we'd seen some interesting things, but nothing quite as bizarre.</p><p>\"Who has ever heard of an invite-only bank? How can such an exclusive organisation allow in people without any suits and ties? Can't a bank afford a less shabby building?\"</p><p>\"I noticed that too\", I added. \"We'd never fit in, we're too overdressed. We'd best pay a visit to the department store and select some more suitable costumes. Then if we act natural enough, we might be able to just walk in.\"</p>"
+	"<h1>Chapter One: The Odd Job</h1><p>\"This has to be the oddest job we've been given, %PROT%.\"</p> <p>Jed was certainly right. As private investigators, we'd seen some interesting things, but nothing quite as bizarre.</p><p>\"Who has ever heard of an invite-only bank? How can such an exclusive organisation allow in people without any suits and ties? Can't a bank afford a less shabby building?\"</p><p>\"I noticed that too\", I added. \"We'd never fit in, we're too overdressed. We'd best pay a visit to the department store and select some more suitable costumes. Then if we act natural enough, we might be able to just walk in.\"</p>",
 	
+	"<h1>Chapter Two: A Return Visit</h1><p>\"Again?\" complained Jed. \"Will we be changing our name to '%PROT% and Jed, Mail Couriers?'\"</p><p>\"Whatever pays the bills, Jed.\"</p><p>\"At least we already have costumes this time. Let's get this over with.\"</p><p>\"Wait\", I said, motioning Jed to halt. \"Look at the line. Something has changed. I don't think we'll fit in with our old costumes anymore.\" It was time for another visit to the department store.</p>", 
 	
+	"<h1>Chapter Three: Interception</h1><p>\"Remind me why we're doing this again, please.\" complained Jed. \"What if our client finds out? What happened to 'whatever pays the bills'?\"</p><p>\"What happened to your sense of curiosity? You're the one that held the letter up to the light. You're the one who tracked down this place. We'll get in there, do a quick survey of the building, and get out.\"</p><p>\"Fine. But let's not poke our noses too deep.\"</p><p>\"Looks like we'll need to figure out the dress code again,\" I said, observing the people walking inside. \"Whoever sells bright colours around this town must be making a killing,\"</p>",
 	
-	
-	
-	, "<h1>Chapter Two: A Return Visit</h1><p>\"Again?\" complained Jed. \"When are we changing our name to '%PROT% and Jed, Mail Couriers'\"</p><p>\"Whatever pays the bills, Jed.\"</p><p>\"At least we already have costumes this time. Let's get this over with.\"</p><p>\"Wait\", I said, motioning Jed to halt. \"Look at the line. Something has changed. I don't think we'll fit in with our old costumes anymore.\" It was time for another visit to the department store.</p>", "<h1>Level Three</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Four</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Five</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Six</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here."
+	"<h1>Level Four</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Five</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Six</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here."
 	
 	
 	
@@ -549,4 +551,9 @@ stories = [
 ];
 
 failures = ["<h1>No Entry</h1><p>As Jed and I approached the back of the queue, sporting our brand new costumes, the rest of the line fell silent. As the queue progressed, Jed pulled me aside.</p><p>\"Do you notice the guards are staring at us? I don't think they're going to allow us in.\"</p><p>\"You're right; they seem to be able to tell us apart. There must be a pattern that we just don't fit. Perhaps we need to revisit the costume store.\"</p>"];
-successes = ["<h1>No Questions Asked</h1><p>Jed and I joined the back of the queue without any noticeable reaction from the other members of the line. We followed the others through the bank entrance without any sign of challenge from the guards. </p><p>\"That was suprisingly easy\", I whispered. \"No questions or ID checks. We must have been able to fit in.\"</p><p>We found our way to the 24th office on the second floor, as instructed, nervously opening the door. On the desk there was a brown parcel with no labels or address. Jed looked relieved: \"Just as he told us, \" he said as he picked up the parcel.</p><p>\"Alright, we've got what we need. Let's keep it cool on the way out.\"</p>", "Success! You got into building 2 .", "Success! You got into building 3.", "Success! You got into building 4.", "Success! You got into building 5.", "Success! You got into building 6.", "Success! You got into building 7.", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building. This was the last level - come back later for more!", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building."];
+successes = ["<h1>No Questions Asked</h1><p>Jed and I joined the back of the queue without any noticeable reaction from the other members of the line. We followed the others through the bank entrance without any sign of challenge from the guards. </p><p>\"That was suprisingly easy\", I whispered. \"No questions or ID checks. We must have been able to fit in.\"</p><p>We found our way to the 24th office on the second floor, as instructed, nervously opening the door. On the desk there was a brown parcel with no labels or address. Jed looked relieved: \"Just as he told us, \" he said as he picked up the parcel.</p><p>\"Alright, we've got what we need. Let's keep it cool on the way out.\"</p>",
+
+
+"<h1>Strange Behaviour</h1><p>Everything was exactly as before, with one exception: the object of interest was a small white envelope.</p><p>On the way out, a man seemed to recognise Jed and approached us. \"Ahoyo Bob three. Is this your newest underling?\" he inquired. Jed replied \"Yes indeed\" with an air of confidence. \"Alright. Good luck.\" the man said as he walked off. \"Don't forget: the dress code tomorrow is zero three eight zero jay.\"</p><p>...</p><p>\"Impressive performance in there Jed. Did you know the guy?\" I asked after a safe distance from the bank.</p><p>\"I didn't recognise him at all. And I know I've never had a nickname of Bob three.\"</p><p>\"I noticed his eyes looked glazed and inactive the whole time. Was he blind?\"</p><p>\"That could explain why he mistook me for someone else. This job only gets stranger.\"</p>",
+
+"Success! You got into building 3.", "Success! You got into building 4.", "Success! You got into building 5.", "Success! You got into building 6.", "Success! You got into building 7.", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building. This was the last level - come back later for more!", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building."];

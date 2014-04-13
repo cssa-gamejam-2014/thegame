@@ -242,7 +242,11 @@ function deselectChoice(id){
 var frameDrawer;
 var currentLevel = 0;
 var setupinfo = false
-var protagonist = escape(window.location.hash.replace("#", ""));
+if (window.location.hash){
+	var protagonist = escape(window.location.hash.replace("#", ""));
+} else {
+	var protagonist = "Alex";
+}
 var storyTime = true;
 var finishedLevel = false;
 var currentContainer = "storyscreen";
@@ -372,7 +376,7 @@ $(document).ready(function(){
 					finishedLevel = true;
 					$('#back').hide();
 					$('#successscreen').slideDown(function(){
-						$('#nexttext').text('Leave the building');
+						$('#nexttext').text('Leave');
 					});
 				});
 				
