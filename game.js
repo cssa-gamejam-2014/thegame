@@ -92,6 +92,7 @@ function draw_frame_wrapper(ctx, elem) {
 
 var lastlevel = 0;
 function draw_frame(ctx, elem, dt) {
+	
     function to_screen(xy) {
         // convert world coordinates into screen coordiantes
         return [
@@ -239,7 +240,8 @@ function deselectChoice(id){
 }
 
 var frameDrawer;
-var currentLevel = 5;
+var currentLevel = 8;
+var setupinfo = false
 var protagonist = escape(window.location.hash.replace("#", ""));
 var storyTime = true;
 var finishedLevel = false;
@@ -338,6 +340,11 @@ $(document).ready(function(){
 				endTheGame();
 				return;
 			}
+			// Set up info for next level
+			if (levels[currentLevel+1].setup){
+				setupinfo = levels[currentLevel+1].setup();
+			}
+			
 			// Progress to next level
 			currentLevel++;
 			
@@ -387,7 +394,9 @@ $(document).ready(function(){
 	$('#back').click(function(){
 		if (!storyTime){
 			$('#'+currentContainer).slideUp(function(){
-				$('#storyscreen').slideDown();
+				$('#storyscreen').slideDown(function(){
+					currentContainer = 'storyscreen';
+				});
 			});
 			storyTime = true;
 			$('#back').hide();
@@ -403,6 +412,10 @@ $(document).ready(function(){
 	}); 
 	
 	$('#protagonist').text(protagonist);
+	
+	if (levels[currentLevel].setup){
+		setupinfo = levels[currentLevel].setup();
+	}
 	
 	setUpStoryScreen();
 	setUpGameScreen();

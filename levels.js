@@ -2,6 +2,36 @@ function getRandom(range){
     return Math.floor((Math.random()*range));
 }
 
+function shuffle(toshuffle) {
+	array = toshuffle.slice(0);
+	
+    var counter = array.length, temp, index;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
+}
+
+function negativeminusonemod(start, modulo){
+	start = start - 1;
+	if (start < 0){
+		start = start+modulo;
+	}
+	return start;
+}
+
 colours = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
 allclothes = ['hat', 'shirt', 'pants', 'shoes'];
 
@@ -274,13 +304,10 @@ levels = [
 		
 		person.hat = colours[start];
 		start = (start+1)%colours.length;
-		console.log(start);
 		person.shirt = colours[start];
 		start = (start+1)%colours.length;
-		console.log(start);
 		person.pants = colours[start];
 		start = (start+1)%colours.length;
-		console.log(start);
 		person.shoes = colours[start];
 
 		console.log(person);
@@ -314,7 +341,7 @@ levels = [
 			if (!clothing[entry])
 				return false;
 			thisIndex = colours.indexOf(clothing[entry]);
-			if (!(lastIndex+1%colours.length == thisIndex)){
+			if (!((lastIndex+1)%colours.length == thisIndex)){
 				return false;
 			}
 			lastIndex = thisIndex;
@@ -329,7 +356,7 @@ levels = [
     generator : function(){
         person = []
 
-        chanceOfWear = {hat: 0, shirt: 50, pants: 100, shoes: 0}
+        chanceOfWear = {hat: 25, shirt: 50, pants: 100, shoes: 0}
         var clothes = ['hat', 'shirt', 'pants', 'shoes'];
         clothes.forEach(function(entry){
             if (getRandom(100) < chanceOfWear[entry] || !(entry in chanceOfWear)){
@@ -348,7 +375,7 @@ levels = [
     randgen : function(){
         person = []
 
-        chanceOfWear = {hat: 0, shirt: 50, pants: 100, shoes: 0}
+        chanceOfWear = {hat: 25, shirt: 50, pants: 100, shoes: 0}
         var clothes = ['hat', 'shirt', 'pants', 'shoes'];
         clothes.forEach(function(entry){
             if (getRandom(100) < chanceOfWear[entry]){
@@ -419,16 +446,28 @@ levels = [
 {
     generator : function(){
         person = []
+        
+        order = setupinfo.order;
 
-        start = getRandom(colours.length);
+        start = getRandom(order.length);
 		
-		person.hat = colours[start];
-		start = start+1%colours.length;
-		person.shirt = colours[start];
-		start = start+1%colours.length;
-		person.pants = colours[start];
-		start = start+1%colours.length;
-		person.shoes = colours[start];
+		if (getRandom(2) == 0){
+			person.hat = order[start];
+			start = negativeminusonemod(start, order.length);
+			person.shirt = order[start];
+			start = negativeminusonemod(start, order.length);
+			person.pants = order[start];
+			start = negativeminusonemod(start, order.length);
+			person.shoes = order[start];
+		} else {
+			person.hat = order[start];
+			start = (start+1)%order.length;
+			person.shirt = order[start];
+			start = (start+1)%order.length;
+			person.pants = order[start];
+			start = (start+1)%order.length;
+			person.shoes = order[start];
+		}
 
         return person;
     },
@@ -438,7 +477,7 @@ levels = [
         var clothes = ['hat', 'shirt', 'pants', 'shoes'];
 		
 		
-        var coloursUsed = colours.slice(0);
+        var coloursUsed = setupinfo['colours'].slice(0);
         clothes.forEach(function(entry){
             if (getRandom(100) < chanceOfWear[entry]){
 				var index = getRandom(coloursUsed.length);
@@ -446,32 +485,57 @@ levels = [
 				coloursUsed.splice(index, 1);
             }
         });
-
+		
+		console.log(person);
         return person;
     },
     validator : function(clothing){
 		
-		lastIndex = colours.indexOf(clothing.hat);
+		order = setupinfo.order;
+		
+		lastIndex = order.indexOf(clothing.hat);
 		checkClothes = ['shirt', 'pants', 'shoes'];
-		checkClothes.forEach(function(entry){
+		
+		trueSoFar = checkClothes.forEach(function(entry){
 			if (!clothing[entry])
 				return false;
-			thisIndex = colours.indexOf(clothing[entry]);
-			if (!(lastIndex+1%colours.length == thisIndex)){
+			thisIndex = order.indexOf(clothing[entry]);
+			if (!((lastIndex+1)%order.length == thisIndex)){
 				return false;
 			}
 			lastIndex = thisIndex;
 		});
+		if (trueSoFar){
+			return true;
+		}
 		
-		return true;
+		lastIndex = order.indexOf(clothing.hat);
+		
+		trueSoFar = true;
+		trueSoFar = checkClothes.forEach(function(entry){
+			if (!clothing[entry])
+				return false;
+			thisIndex = order.indexOf(clothing[entry]);
+			if (!(negativeminusonemod(lastIndex, order.length) == thisIndex)){
+				return false;
+			}
+			lastIndex = thisIndex;
+		});
+		return trueSoFar;
     },
     setup : function(){
+		var setupinfo = [];
+		setupinfo['colours'] = colours.slice(0);
+		setupinfo['colours'].splice(getRandom(setupinfo['colours']).length, 1);
+		setupinfo['colours'].splice(getRandom(setupinfo['colours']).length, 1);
+		setupinfo['order'] = shuffle(setupinfo['colours']);
 		
+		return setupinfo;
 	}
 }];
 
 stories = [
-	"<h1>The Odd Job</h1><p>\"This has to be the oddest job we've been given, %PROT%.\"</p> <p>Jed was certainly right. As private investigators, we'd seen some interesting things, but nothing quite as bizarre.</p><p>\"Who has ever heard of an invite-only bank? How can such an exclusive organisation allow in people without any suits and ties? Can't a bank afford a less shabby building?\"</p><p>\"I noticed that too\", I added. \"We'd never fit in, we're too overdressed. We'd best pay a visit to the department store to pick up some more suitable costumes.\"</p>"
+	"<h1>The Odd Job</h1><p>\"This has to be the oddest job we've been given, %PROT%.\"</p> <p>Jed was certainly right. As private investigators, we'd seen some interesting things, but nothing quite as bizarre.</p><p>\"Who has ever heard of an invite-only bank? How can such an exclusive organisation allow in people without any suits and ties? Can't a bank afford a less shabby building?\"</p><p>\"I noticed that too\", I added. \"We'd never fit in, we're too overdressed. We'd best pay a visit to the department store and select some more suitable costumes. Then if we act natural enough, we might be able to just walk in.\"</p>"
 	
 	
 	
