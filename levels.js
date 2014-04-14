@@ -42,8 +42,8 @@ levels = [
     generator : function(){
         person = []
 
-        chanceOfWear = {shirt: 95, hat: 80}
-        var clothes = ['shirt', 'hat', 'shoes'];
+        chanceOfWear = {}
+        var clothes = ['shirt'];
         clothes.forEach(function(entry){
             if (getRandom(100) < chanceOfWear[entry] || !(entry in chanceOfWear)){
                 person[entry] =  colours[getRandom(6)];
@@ -57,8 +57,8 @@ levels = [
     randgen : function(){
         person = []
         
-        chanceOfWear = {shirt: 95, hat: 80}
-        var clothes = allclothes;
+        chanceOfWear = {}
+        var clothes = ['shirt', 'pants'];;
         clothes.forEach(function(entry){
             if (getRandom(100) < chanceOfWear[entry] || !(entry in chanceOfWear)){
                 person[entry] =  colours[getRandom(6)];
@@ -550,7 +550,7 @@ stories = [
 	
 ];
 
-failures = ["<h1>No Entry</h1><p>As Jed and I approached the back of the queue, sporting our brand new costumes, the rest of the line fell silent. As the queue progressed, Jed pulled me aside.</p><p>\"Do you notice the guards are staring at us? I don't think they're going to allow us in.\"</p><p>\"You're right; they seem to be able to tell us apart. There must be a pattern that we just don't fit. Perhaps we need to revisit the costume store.\"</p>"];
+failures = ["<h1>No Entry</h1><p>As Jed and I approached the back of the queue, sporting our brand new costumes, the rest of the line fell silent. As the queue progressed, Jed pulled me aside.</p><p>\"Do you notice the guards are staring at us? I don't think they're going to allow us in.\"</p><p>\"You're right; they seem to be able to tell us apart. There must be a pattern that everyone else is following that we just don't fit. Perhaps we need to revisit the costume store and buy costumes that fit in.\"</p>"];
 successes = ["<h1>No Questions Asked</h1><p>Jed and I joined the back of the queue without any noticeable reaction from the other members of the line. We followed the others through the bank entrance without any sign of challenge from the guards. </p><p>\"That was suprisingly easy\", I whispered. \"No questions or ID checks. We must have been able to fit in.\"</p><p>We found our way to the 24th office on the second floor, as instructed, nervously opening the door. On the desk there was a brown parcel with no labels or address. Jed looked relieved: \"Just as he told us, \" he said as he picked up the parcel.</p><p>\"Alright, we've got what we need. Let's keep it cool on the way out.\"</p>",
 
 

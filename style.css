@@ -17,17 +17,20 @@ body {
 #gamescreen {
 }
 #storyscreen {
+	font-family: Helvetica;
 	margin-left: 4px;
 	width: 40%;
 	margin: 0px auto;
 }
 #failurescreen {
+	font-family: Helvetica;
 	margin-left: 4px;
 	width: 40%;
 	margin: 0px auto;
 	display: none;
 }
 #successscreen {
+	font-family: Helvetica;
 	margin-left: 4px;
 	width: 40%;
 	margin: 0px auto;

@@ -18,19 +18,32 @@ spawn_rate = 0.5,
 // MAXIMUM ARMOUR
 maximum_speed = 80
 
-function drawChoice(outfit, position){
+possibletexts = ['buy me!', '50% off!', 'only 99.95!', 'while stocks last!', 'click me!', 'you deserve it!', 'put me on!']
+function drawChoice(outfit, position, text){
     var c=document.getElementById("chooseCanvas_"+position);
     var ctx=c.getContext("2d");
+	ctx.clear();
 	
     for (var key in outfit){
         var object = document.getElementById(key+"_"+outfit[key]);
         ctx.drawImage(object, 0, 0);
     }
+	ctx.rotate(-Math.PI/2);
+	ctx.textAlign = "center";
+	ctx.font="20px Helvetica";
+	if (getRandom(2) == 0){
+		ypos = 25;
+	} else {
+		ypos = 145;
+	}
+	ctx.fillText(possibletexts[getRandom(possibletexts.length)],-85,ypos);
+	ctx.rotate(Math.PI/2);
 }
 
 function drawCharacter(outfit, position){
     var c=document.getElementById("character_"+position);
     var ctx=c.getContext("2d");
+	ctx.clear();
 	
     var body=document.getElementById("body");
     ctx.drawImage(body,0,0);
@@ -39,6 +52,18 @@ function drawCharacter(outfit, position){
         var object = document.getElementById(key+"_"+outfit[key]);
         ctx.drawImage(object, 0, 0);
     }
+	ctx.rotate(-Math.PI/2);
+	ctx.textAlign = "center";
+	ctx.font="20px Helvetica";
+	
+	if (position == 1){
+		name = protagonist;
+	} else {
+		name = "Jed";
+	}
+	
+	ctx.fillText(name,-105,25);
+	ctx.rotate(Math.PI/2);
 }
 
 function clearChoice(position){
@@ -51,6 +76,10 @@ function clearCharacter(position){
 	var c=document.getElementById("character_"+position);
 	var ctx=c.getContext("2d");
 	ctx.clear();
+}
+
+function equalPeople(person1, person2){
+	return (person1.hat == person2.hat && person1.shirt == person2.shirt && person1.pants == person2.pants && person1.shoes == person2.shoes);
 }
 
 function draw_person(ctx, outfit) {
@@ -132,6 +161,10 @@ function draw_frame(ctx, elem, dt) {
     if ((ct - last_person_spawn_time) > 1/spawn_rate) {
         last_person_spawn_time = ct;
         var new_person = levels[currentLevel].generator();
+		console.log(correct);
+		while (equalPeople(new_person, choices[correct[0]]) || equalPeople(new_person, choices[correct[1]])) {
+			new_person = levels[currentLevel].generator();			
+		}
         new_person.left = elem.width;
         people.push(new_person);
     }
@@ -235,6 +268,9 @@ function deselectChoice(id){
 	for (var x = 0; x < selected.length; x++){
 		drawCharacter(choices[selected[x]], x+1);
 	}
+	for (var x = selected.length; x < 2; x++){
+		drawCharacter([], x+1);
+	}
 	
 	$("#next").addClass("ui-state-disabled");
 }
@@ -261,19 +297,30 @@ function setUpGameScreen(){
 	}
 	for (var x=1; x<3; x++){
 		clearCharacter(x);
+		drawCharacter([], x);
 	}
 
 	level = levels[currentLevel];
 	
-	correct.push(getRandom(10));
-	correct.push(getRandom(10));
+	correct[0] = (getRandom(10));
+	correct[1] = (getRandom(10));
 	console.log(correct[0] +" and " + correct[1] + " are correct");
 	while (correct[0] == correct[1]){
-		correct[1] = getRandom(10)+1;
+		correct[1] = getRandom(10);
+	}
+	if (correct[0] > correct[1]){
+		var temp = correct[0];
+		correct[0] = correct[1];
+		correct[1] = temp;
 	}
 	for (var x=0; x<10; x++){
 		if (x == correct[0] || x == correct[1]){
 			newperson = level.generator();
+			if (x == correct[1]){
+				while (equalPeople(newperson, choices[correct[0]])){
+					newperson = level.generator();
+				}
+			}
 			choices.push(newperson);
 			drawChoice(newperson, x);
 		} else {
@@ -322,7 +369,7 @@ $(document).ready(function(){
 	});
 	
 	$('#next').click(function(){
-		console.log("I got clicked "+storyTime+selected.length);
+		$('#heading').slideUp();
 		if (storyTime){
 			$('#'+currentContainer).slideUp(function(){
 				currentContainer = 'gamescreen';
@@ -414,8 +461,6 @@ $(document).ready(function(){
 	$(window).unload(function() {
 		clearInterval(framesDrawer);
 	}); 
-	
-	$('#protagonist').text(protagonist);
 	
 	if (levels[currentLevel].setup){
 		setupinfo = levels[currentLevel].setup();
