@@ -557,3 +557,31 @@ successes = ["<h1>No Questions Asked</h1><p>Jed and I joined the back of the que
 "<h1>Strange Behaviour</h1><p>Everything was exactly as before, with one exception: the object of interest was a small white envelope.</p><p>On the way out, a man seemed to recognise Jed and approached us. \"Ahoyo Bob three. Is this your newest underling?\" he inquired. Jed replied \"Yes indeed\" with an air of confidence. \"Alright. Good luck.\" the man said as he walked off. \"Don't forget: the dress code tomorrow is zero three eight zero jay.\"</p><p>...</p><p>\"Impressive performance in there Jed. Did you know the guy?\" I asked after a safe distance from the bank.</p><p>\"I didn't recognise him at all. And I know I've never had a nickname of Bob three.\"</p><p>\"I noticed his eyes looked glazed and inactive the whole time. Was he blind?\"</p><p>\"That could explain why he mistook me for someone else. This job only gets stranger.\"</p>",
 
 "Success! You got into building 3.", "Success! You got into building 4.", "Success! You got into building 5.", "Success! You got into building 6.", "Success! You got into building 7.", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building. This was the last level - come back later for more!", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building."];
+
+hints = [
+// Level 1
+["\"Look at all the people that are getting into the bank. They must share something in common that allows each of them entry. We should buy two costumes which also have the characteristic that allows entry.\" suggested Jed."
+, "Suddenly it hits you. Everyone has the same taste in pants!"],
+// Level 2
+["", ""],
+// Level 3
+["", ""],
+// Level 4
+["", ""],
+// Level 5
+["", ""],
+// Level 6
+["", ""],
+// Level 7
+["", ""],
+// Level 8
+["", ""],
+// Level 9
+["", ""],
+// Level 10
+["", ""]
+
+
+
+
+]
