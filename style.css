@@ -17,23 +17,11 @@ body {
 #gamescreen {
 }
 #storyscreen {
-	font-family: Helvetica;
-	margin-left: 4px;
-	width: 40%;
-	margin: 0px auto;
 }
 #failurescreen {
-	font-family: Helvetica;
-	margin-left: 4px;
-	width: 40%;
-	margin: 0px auto;
 	display: none;
 }
 #successscreen {
-	font-family: Helvetica;
-	margin-left: 4px;
-	width: 40%;
-	margin: 0px auto;
 	display: none;
 }
 #characters .nameplate {
@@ -41,9 +29,18 @@ body {
 	width: 175px;
 	text-align: center;
 }
+.storytime {
+	font-family: Helvetica;
+	margin-left: 4px;
+	width: 40%;
+	margin: 0px auto;
+}
 .backbtn {
 	display:inline-block; float:left; margin-left: 120px; margin-top: 30px;
 }
 .nextbtn {
 	position:relative; display:block; float:right; margin-right: 120px; margin-top: 30px;
+}
+.hintbtn {
+	
 }

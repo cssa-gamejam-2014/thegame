@@ -23,6 +23,8 @@
         <button id='back' style="display: none;" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style=""><span class="ui-button-text" id="backtext">Go back to the story</span></button>
         </div>
         <div class='nextbtn'>
+        <button id='hint1' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only hintbtn" role="button" aria-disabled="false" style="display: none;"><span class="ui-button-text"  id="hint1text">"Jed, any clues?"</span></button>
+        <button id='hint2' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only hintbtn" role="button" aria-disabled="false" style="display: none;"><span class="ui-button-text"  id="hint2text">Blinding flash of inspiration</span></button>
         <button id='next' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style=""><span class="ui-button-text"  id="nexttext">Go to the costume store</span></button>
         </div>
         </div>
@@ -49,11 +51,13 @@
 			<canvas id='character_2' width=175 height=200></canvas>
 			</div>
         </div>
-        <div id='storyscreen'>
+        <div id='storyscreen' class='storytime'>
         </div>
-        <div id='failurescreen'>
+        <div id='failurescreen' class='storytime'>
         </div>
-        <div id='successscreen'>
+        <div id='successscreen' class='storytime'>
+        </div>
+        <div id='hintscreen' class='storytime'>
         </div>
         </div>
         

@@ -287,6 +287,9 @@ var storyTime = true;
 var finishedLevel = false;
 var currentContainer = "storyscreen";
 
+var hint1timer;
+var hint2timer;
+
 function setUpGameScreen(){
 	choices = [];
 	correct = [];
@@ -355,6 +358,15 @@ function endTheGame(){
 	});
 }
 
+function showHintButton(number){
+	$('#hint'+number).slideDown();
+	
+	if  (number == 1){		
+		// Set up the hint timer
+		hint1timer = setTimeout("showHintButton(2)", 15000);
+	}	
+}
+
 $(document).ready(function(){
 	
 	// Selection code for choices
@@ -381,9 +393,13 @@ $(document).ready(function(){
 				$('#gamescreen').slideDown();
 			});
 			storyTime = false;
-			$('#back').css('display', 'inline');
+			$('#back').show();
 			$('#nexttext').text('Walk in the door');
 			$("#next").addClass("ui-state-disabled");
+			
+			// Set up the hint timer
+			hint1timer = setTimeout("showHintButton(1)", 15000);
+			
 		// We successfully finished the level
 		} else if (finishedLevel){
 			
@@ -391,6 +407,13 @@ $(document).ready(function(){
 				endTheGame();
 				return;
 			}
+			
+			// Clear hint timers
+			clearTimeout(hint1timer);
+			clearTimeout(hint2timer);
+			$('#hint1').hide();
+			$('#hint2').hide();
+			
 			// Set up info for next level
 			if (levels[currentLevel+1].setup){
 				setupinfo = levels[currentLevel+1].setup();
@@ -434,7 +457,6 @@ $(document).ready(function(){
 					setUpGameScreen();
 					currentContainer = 'failurescreen';
 					$('#failurescreen').slideDown(function(){
-						storyTime = true;
 						$('#nexttext').text('Go to the costume store');
 					});
 				});
@@ -451,10 +473,35 @@ $(document).ready(function(){
 			});
 			storyTime = true;
 			$('#back').hide();
+			$('#nexttext').text('Go to the costume store');
 			$("#next").removeClass("ui-state-disabled");
 		} else {
 			console.log("clicked back when it was story time");
 		}
+	});
+	
+	$('#hint1').click(function(){
+		$('#'+currentContainer).slideUp(function(){
+			if (hints[currentLevel][0])
+				$('#hintscreen').html(hints[currentLevel][0]);
+			$('#nexttext').text('Go to the costume store');
+			$("#next").removeClass("ui-state-disabled");
+			$('#hintscreen').slideDown(function(){
+				currentContainer = 'hintscreen';
+			});
+		});
+	});
+	
+	$('#hint2').click(function(){
+		$('#'+currentContainer).slideUp(function(){
+			if (hints[currentLevel][1])
+				$('#hintscreen').html(hints[currentLevel][1]);
+			$('#nexttext').text('Go to the costume store');
+			$("#next").removeClass("ui-state-disabled");
+			$('#hintscreen').slideDown(function(){
+				currentContainer = 'hintscreen';
+			});
+		});
 	});
 	
 	// Handle navigations a bit nicer
