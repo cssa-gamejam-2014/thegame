@@ -563,11 +563,14 @@ hints = [
 ["\"Look at all the people that are getting into the bank. They must share something in common that allows each of them entry. We should buy two costumes which also have the characteristic that allows entry.\" suggested Jed."
 , "Suddenly it hits you. Everyone has the same taste in pants!"],
 // Level 2
-["", ""],
+["\"The entrants seem to have a choice of two options which both fit in.\" observed Jed.",
+ "You realise that for all entrants, the shirt and pants match, but there seems to be a choice of colour."],
 // Level 3
-["", ""],
+["\"There seems to be a lot of matching outfits.\" observed Jed.",
+ "You realise that the entrants are mostly wearing the same colour."],
 // Level 4
-["", ""],
+["\"Is there something happening in the hats and shoes?\" asked Jed.",
+ ""],
 // Level 5
 ["", ""],
 // Level 6

@@ -360,11 +360,6 @@ function endTheGame(){
 
 function showHintButton(number){
 	$('#hint'+number).slideDown();
-	
-	if  (number == 1){		
-		// Set up the hint timer
-		hint1timer = setTimeout("showHintButton(2)", 15000);
-	}	
 }
 
 $(document).ready(function(){
@@ -408,12 +403,6 @@ $(document).ready(function(){
 				return;
 			}
 			
-			// Clear hint timers
-			clearTimeout(hint1timer);
-			clearTimeout(hint2timer);
-			$('#hint1').hide();
-			$('#hint2').hide();
-			
 			// Set up info for next level
 			if (levels[currentLevel+1].setup){
 				setupinfo = levels[currentLevel+1].setup();
@@ -434,12 +423,27 @@ $(document).ready(function(){
 				});
 			});
 			finishedLevel = false;
+		} else if (($('#gamescreen').css('display') == 'none')){
+			$('#'+currentContainer).slideUp(function(){
+				currentContainer = 'gamescreen';
+				$('#gamescreen').slideDown();
+			});
+			storyTime = false;
+			$('#back').show();
+			$('#nexttext').text('Walk in the door');
+			$("#next").addClass("ui-state-disabled");
 		// Clicked to walk in the door
 		} else {
 			if (selected.length != 2){
 				return 0;
 			}
 			if (correct.indexOf(parseInt(selected[0])) != -1 && correct.indexOf(parseInt(selected[1])) != -1){
+			
+				// Clear hint timers
+				clearTimeout(hint1timer);
+				clearTimeout(hint2timer);
+				$('#hint1').hide();
+				$('#hint2').hide();
 				
 				$('#gamescreen').slideUp(function(){
 					currentContainer = 'successscreen';
@@ -490,6 +494,8 @@ $(document).ready(function(){
 				currentContainer = 'hintscreen';
 			});
 		});
+		// Set up the hint timer
+		hint2timer = setTimeout("showHintButton(2)", 15000);
 	});
 	
 	$('#hint2').click(function(){
