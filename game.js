@@ -275,7 +275,7 @@ function deselectChoice(id){
 }
 
 var frameDrawer;
-var currentLevel = 2;
+var currentLevel = 0;
 var setupinfo = false
 if (window.location.hash){
 	var protagonist = escape(window.location.hash.replace("#", ""));
