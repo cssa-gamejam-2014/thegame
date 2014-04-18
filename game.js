@@ -160,7 +160,6 @@ function draw_frame(ctx, elem, dt) {
     if ((ct - last_person_spawn_time) > 1/spawn_rate) {
         last_person_spawn_time = ct;
         var new_person = levels[currentLevel].generator();
-		console.log(correct);
 		while (equalPeople(new_person, choices[correct[0]]) || equalPeople(new_person, choices[correct[1]])) {
 			new_person = levels[currentLevel].generator();			
 		}
@@ -204,24 +203,30 @@ function on_resize_wrapper(ctx, elem) {
     }
 }
 
-var selected = [];
+var characters = [-1, -1];
 
 var choices = [];
 var correct = [];
 
+nextdressed = 0;
 function selectChoice(id){
 	$("#chooseCanvas_"+id).addClass('selected');
 	
-	// if building up selection
-	if (selected.length < 2){
-		selected.push(id);
-		drawCharacter(choices[id], selected.length);
-	// if already selected 2 characters
+	// if either are not dressed
+	if (characters[0] == -1){
+		characters[0] = id;
+		nextdressed = (0+1)%2;
+		drawCharacter(choices[id], 1);
+	} else if (characters[1] == -1){
+		characters[1] = id;
+		nextdressed = (1+1)%2;
+		drawCharacter(choices[id], 2);
+	// Both are dressed. Dress least recently dressed one.
 	} else {
-		deselectChoice(selected[1]);
-		
-		selected[1] = id;
-		drawCharacter(choices[id], selected.length);
+		deselectChoice(characters[nextdressed]);
+		characters[nextdressed] = id;
+		drawCharacter(choices[id], (nextdressed+1));
+		nextdressed = (nextdressed+1)%2;
 	}
 	
 	// Red rectangle
@@ -234,7 +239,7 @@ function selectChoice(id){
 	ctx.rect(5,5,160,190);
 	ctx.stroke();
 	
-	if (selected.length == 2){
+	if (characters[0] != -1 && characters[1] != -1){
 		$("#next").removeClass("ui-state-disabled");
 	}
 }
@@ -242,11 +247,10 @@ function selectChoice(id){
 function deselectChoice(id){
 	
 	// remove selection
-	var index = selected.indexOf(id);
-	
+	var index = characters.indexOf(id);
 	
 	if (index > -1) {
-		selected.splice(index, 1);
+		characters[index] = -1;
 	}
 	
 	$("#chooseCanvas_"+id).removeClass('selected');
@@ -264,14 +268,17 @@ function deselectChoice(id){
 		var ctx=c.getContext("2d");
 		ctx.clear();
 	}
-	for (var x = 0; x < selected.length; x++){
-		drawCharacter(choices[selected[x]], x+1);
+	for (var x = 0; x < 2; x++){
+		if (characters[x] != -1)
+			drawCharacter(choices[characters[x]], x+1);
 	}
-	for (var x = selected.length; x < 2; x++){
-		drawCharacter([], x+1);
+	for (var x = 0; x < 2; x++){
+		if (characters[x] == -1)
+			drawCharacter([], x+1);
 	}
 	
-	$("#next").addClass("ui-state-disabled");
+	if (characters[0] == -1 || characters[1] == -1)
+		$("#next").addClass("ui-state-disabled");
 }
 
 var frameDrawer;
@@ -292,7 +299,7 @@ var hint2timer;
 function setUpGameScreen(){
 	choices = [];
 	correct = [];
-	selected = [];
+	characters = [-1, -1];
 	
 	for (var x=0; x<10; x++){
 		clearChoice(x);
@@ -306,7 +313,6 @@ function setUpGameScreen(){
 	
 	correct[0] = (getRandom(10));
 	correct[1] = (getRandom(10));
-	console.log(correct[0] +" and " + correct[1] + " are correct");
 	while (correct[0] == correct[1]){
 		correct[1] = getRandom(10);
 	}
@@ -327,9 +333,22 @@ function setUpGameScreen(){
 			choices.push(newperson);
 			drawChoice(newperson, x);
 		} else {
-			var invalid = level.randgen();
-			while (level.validator(invalid)){
+			var invalid;
+			// Check not the same as anyone else
+			var same = true;
+			while (same){
+				same = false;
 				invalid = level.randgen();
+				// Make sure cannot enter with this costume
+				while (level.validator(invalid)){
+					invalid = level.randgen();
+				}
+				// Check for equality with anyone else
+				choices.forEach(function(person){
+					if (equalPeople(invalid, person)){
+						same = true;
+					}
+				});
 			}
 			choices.push(invalid);
 			drawChoice(invalid, x);
@@ -375,28 +394,21 @@ $(document).ready(function(){
 		}
 	});
 	
+	// Selection code for choices
+	$('.characterCanvas').click(function(){
+		var character = $(this).attr('choice');
+		
+		deselectChoice(characters[character]);
+	});
+	
 	$('#next').click(function(){
+		// Don't work if disabled
+		if ($(this).hasClass("ui-state-disabled"))
+			return true;
 		$('#heading').slideUp();
-		if (storyTime){
-			$('#'+currentContainer).slideUp(function(){
-				currentContainer = 'gamescreen';
-				
-				// redraw game screen to fix up Chrome
-				for (var x=0; x<10; x++){
-					drawChoice(choices[x], x);
-				}
-				$('#gamescreen').slideDown();
-			});
-			storyTime = false;
-			$('#back').show();
-			$('#nexttext').text('Walk in the door');
+		if (finishedLevel){
+			console.log("finishing level off");
 			$("#next").addClass("ui-state-disabled");
-			
-			// Set up the hint timer
-			hint1timer = setTimeout("showHintButton(1)", 15000);
-			
-		// We successfully finished the level
-		} else if (finishedLevel){
 			
 			if (currentLevel+1 >= levels.length){
 				endTheGame();
@@ -420,9 +432,31 @@ $(document).ready(function(){
 				$('#back').hide();
 				$('#storyscreen').slideDown(function(){
 					$('#nexttext').text('Go to the costume store');
+					$("#next").removeClass("ui-state-disabled");
 				});
 			});
 			finishedLevel = false;
+			console.log("done, ready for next");
+		} else if (storyTime){
+			console.log("pushing past the story");
+			$('#'+currentContainer).slideUp(function(){
+				currentContainer = 'gamescreen';
+				
+				// redraw game screen to fix up Chrome
+				for (var x=0; x<10; x++){
+					drawChoice(choices[x], x);
+				}
+				$('#gamescreen').slideDown();
+			});
+			storyTime = false;
+			$('#back').show();
+			$('#nexttext').text('Walk in the door');
+			$("#next").addClass("ui-state-disabled");
+			
+			// Set up the hint timer
+			hint1timer = setTimeout("showHintButton(1)", 15000);
+			
+		// We successfully finished the level
 		} else if (($('#gamescreen').css('display') == 'none')){
 			$('#'+currentContainer).slideUp(function(){
 				currentContainer = 'gamescreen';
@@ -431,14 +465,14 @@ $(document).ready(function(){
 			storyTime = false;
 			$('#back').show();
 			$('#nexttext').text('Walk in the door');
-			if (selected.length < 2)
+			if (characters[0] == -1 || characters[1] == -1)
 				$("#next").addClass("ui-state-disabled");
 		// Clicked to walk in the door
 		} else {
-			if (selected.length != 2){
+			if (characters[0] == -1 || characters[1] == -1){
 				return 0;
 			}
-			if (correct.indexOf(parseInt(selected[0])) != -1 && correct.indexOf(parseInt(selected[1])) != -1){
+			if (correct.indexOf(parseInt(characters[0])) != -1 && correct.indexOf(parseInt(characters[1])) != -1){
 			
 				// Clear hint timers
 				clearTimeout(hint1timer);

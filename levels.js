@@ -592,7 +592,7 @@ hints = [
 ["\"Everyone is wearing a variety of colours today.\" observed Jed.",
 "The dress code seemed to be something to do with the number of matching items."],
 // Level 7
-["\"I don't know why, but I keep checking the end of the line for a leprechaun with a pot of gold.\" said Jed.", "Just when I thought I would go blind from all the bright colours, I began to discern a pattern in the order of the colours."],
+["\"I don't know why, but I keep checking the end of the line for a leprechaun with a pot of gold. The clothes also remind me of the refraction of light\" said Jed.", "Just when I thought I would go blind from all the bright colours, I began to discern a pattern in the order of the colours."],
 // Level 8
 ["\"What's up with the shoes?\" asked Jed. \"Is there a particular reason why some people choose purple, and others choose green?\"", 
 "I began to see a relationship between the shirt and shoes that all the entrants were wearing."],
