@@ -175,8 +175,8 @@ function draw_frame(ctx, elem, dt) {
         ctx.restore();
     }
 
-    var groundfloor = document.getElementById("building_ground");
-    var windows = document.getElementById("building_windows");
+    var groundfloor = document.getElementById(buildings[currentLevel][0]);
+    var windows = document.getElementById(buildings[currentLevel][1]);
     // Draw the upper levels of the building
     for (var offset = elem.height - windows.height; offset > -windows.height; offset -= windows.height) {
         ctx.drawImage(windows, 0, offset);

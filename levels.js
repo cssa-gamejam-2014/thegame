@@ -607,3 +607,20 @@ hints = [
 
 
 ]
+
+buildings = [
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["hideout_ground", "hideout_windows"],
+["office_ground", "office_windows"],
+["seafood_ground", "seafood_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"],
+["building_ground", "building_windows"]
+
+]
