@@ -160,18 +160,23 @@ levels = [
         return person;
     },
     validator : function(clothing){
-		colours.forEach(function(entry){
+		valid = false;
+		colours.every(function(entry){
 			occurances = 0;
-			clothing.forEach(function(item){
-				if (item == entry){
+			Object.keys(clothing).forEach(function(item){
+				if (clothing[item] == entry){
 					occurances++;
 				}
 			});
 			if (occurances > 2){
-				return true;
+				valid = true;
+				// break
+				return false;
 			}
+			// no break
+			return true;
 		});
-		return false;
+		return valid;
     }
 },
 
@@ -236,14 +241,15 @@ levels = [
     },
     randgen : function(){
         person = []
-
-        chanceOfWear = {hat: 65, shirt: 80, pants: 100, shoes: 45}
-        var clothes = ['hat', 'shirt', 'pants', 'shoes'];
-        clothes.forEach(function(entry){
-            if (getRandom(100) < chanceOfWear[entry]){
-                person[entry] =  colours[getRandom(6)];
-            }
-        });
+        
+        person['pants'] =  colours[getRandom(6)];
+		
+		if (getRandom(3) == 0){
+			person['shirt'] = colours[getRandom(6)];
+		} else {
+			person['hat'] = colours[getRandom(6)];
+			person['shoes'] = colours[getRandom(6)];
+		}
 
         return person;
     },
@@ -543,7 +549,11 @@ stories = [
 	
 	"<h1>Chapter Three: Interception</h1><p>\"Remind me why we're doing this again, please.\" complained Jed. \"What if our client finds out? What happened to 'whatever pays the bills'?\"</p><p>\"What happened to your sense of curiosity? You're the one that held the letter up to the light. You're the one who tracked down this place. We'll get in there, do a quick survey of the building, and get out.\"</p><p>\"Fine. But let's not poke our noses too deep.\"</p><p>\"Looks like we'll need to figure out the dress code again,\" I said, observing the people walking inside. \"Whoever sells bright colours around this town must be making a killing,\"</p>",
 	
-	"<h1>Level Four</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Five</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<h1>Level Six</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here."
+	"<h1><h1>Chapter Four: Tailing</h1><p>\"There!\" whispered Jed. \"He entered that building.\"</p><p>\"He was in a hurry\", I noted, \"he jumped the queue!\".</p><p>\"If he just stole something, I hardly think he'd be in the mood for politeness, %PROT%.\"</p><p>\"Okay. What's the plan?\"</p><p>Jed sighed. \"I guess we're sneaking into another of these weird buildings.\"</p></p>", 
+	
+	"<h1>Chapter Five: The Test</h1><p>\"Now this just seems silly\" I admitted to Jed. \"We're literally breaking into a restaurant for this guy.\"</p><p>\"If it's such an exclusive restaurant, why isn't the dress code a bit fancier?\" I puzzled.</p><p>\"Hippy commune?\" suggested Jed.</p><p>\"At this point I'm open to any theories, Jed.\"</p>",
+	
+	"<h1>Level Six</h1><p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "<p>This is just placeholder text. The level is still functional - can you spot the pattern?</p>", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here.", "Testing here."
 	
 	
 	
@@ -556,33 +566,42 @@ successes = ["<h1>No Questions Asked</h1><p>Jed and I joined the back of the que
 
 "<h1>Strange Behaviour</h1><p>Everything was exactly as before, with one exception: the object of interest was a small white envelope.</p><p>On the way out, a man seemed to recognise Jed and approached us. \"Ahoyo Bob three. Is this your newest underling?\" he inquired. Jed replied \"Yes indeed\" with an air of confidence. \"Alright. Good luck.\" the man said as he walked off. \"Don't forget: the dress code tomorrow is zero three eight zero jay.\"</p><p>...</p><p>\"Impressive performance in there Jed. Did you know the guy?\" I asked after a safe distance from the bank.</p><p>\"I didn't recognise him at all. And I know I've never had a nickname of Bob three.\"</p><p>\"I noticed his eyes looked glazed and inactive the whole time. Was he blind?\"</p><p>\"That could explain why he mistook me for someone else. This job only gets stranger.\"</p>",
 
-"Success! You got into building 3.", "Success! You got into building 4.", "Success! You got into building 5.", "Success! You got into building 6.", "Success! You got into building 7.", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building. This was the last level - come back later for more!", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building."];
+"<h1>Alarming Sight</h1><p>As soon as we stepped in the building, alarms rang. The guards standing outside rushed in - straight past us. The scene quickly turned chaotic; people rushed out of the building whilst guards ran around frantically, to the tune of what sounded closer to a bombing siren than a fire alarm. Amidst the crowd we spotted the client, clearly carrying something, slip out of the building.</p>",
+
+"<h1>Caught!</h1><p>The client had clearly been waiting for us. \"Come with me.\" he said sternly, like he was directing school-boys. Jed and I exchanged worried glances, getting ready to run. He noticed and softened his tone. \"There's nothing to worry about. But there's something we need to discuss.\"</p><p>He walked us to his small office and offered us chairs.</p><p>\"Although my sight may be poor, my smell is much keener than yours.\" he explained. \"However, you have both displayed an advanced level of code cracking proficiency. Your logic circuits are clearly well suited to breaking codes.\"</p><p>\"Err, thanks?\" replied Jed, cautiously, unsure of the compliment.</p><p>\"I have another task for you - or more accurately, a test.\"</p>", 
+
+"Success! You got into building 5.", "Success! You got into building 6.", "Success! You got into building 7.", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building. This was the last level - come back later for more!", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building."];
 
 hints = [
 // Level 1
 ["\"Look at all the people that are getting into the bank. They must share something in common that allows each of them entry. We should buy two costumes which also have the characteristic that allows entry.\" suggested Jed."
-, "Suddenly it hits you. Everyone has the same taste in pants!"],
+, "Suddenly it hit me. Everyone had the same taste in pants!"],
 // Level 2
 ["\"The entrants seem to have a choice of two options which both fit in.\" observed Jed.",
- "You realise that for all entrants, the shirt and pants match, but there seems to be a choice of colour."],
+ "I came to realise realise that all entrants wore a matching set of shirt and pants, but there seemed to be a choice of colour."],
 // Level 3
 ["\"There seems to be a lot of matching outfits.\" observed Jed.",
- "You realise that the entrants are mostly wearing the same colour."],
+ "After hours of scoping the line, I came to notice the entrants were mostly wearing the same colour.."],
 // Level 4
 ["\"Is there something happening in the hats and shoes?\" asked Jed.",
- ""],
+ "It seemed that there was a particular pair of clothing items which matched for every entrant."],
 // Level 5
-["", ""],
+["\"People seem to be wearing at least two and at most 3 items of clothing. This must be a result of the dress code.\" said Jed.",
+"I noticed there were two types of people entering the building, distinguished by their choice of hat and shoes."],
 // Level 6
-["", ""],
+["\"Everyone is wearing a variety of colours today.\" observed Jed.",
+"The dress code seemed to be something to do with the number of matching items."],
 // Level 7
-["", ""],
+["\"I don't know why, but I keep checking the end of the line for a leprechaun with a pot of gold.\" said Jed.", "Just when I thought I would go blind from all the bright colours, I began to discern a pattern in the order of the colours."],
 // Level 8
-["", ""],
+["\"What's up with the shoes?\" asked Jed. \"Is there a particular reason why some people choose purple, and others choose green?\"", 
+"I began to see a relationship between the shirt and shoes that all the entrants were wearing."],
 // Level 9
-["", ""],
+["\"People here seem to all share some favourite colours,\" observed Jed.", 
+"I came to see that everyone in the line favoured red and yellow."],
 // Level 10
-["", ""]
+["\"I think there's an order on the colours again,\" suggested Jed.", 
+"While there was an order on the colours, there seem to be disagreement on how to apply the order."]
 
 
 

@@ -1,4 +1,4 @@
-var TARGET_FRAMERATE=10,
+var TARGET_FRAMERATE=25;
 camera = {
 	// distances in metres
 	// "top" and "right" are both screen edge locations in world form
@@ -9,16 +9,15 @@ camera = {
 	// width and height in pixels
 	width: 0,
 	height: 0,
-},
-people = [
-],
-last_person_spawn_time = 0,
-spawn_rate = 0.5,
+};
+people = [];
+last_person_spawn_time = 0;
+spawn_rate = 0.5;
 // MAXIMUM STRENGTH
 // MAXIMUM ARMOUR
-maximum_speed = 80
+maximum_speed = 80;
 
-possibletexts = ['buy me!', '50% off!', 'only 99.95!', 'while stocks last!', 'click me!', 'you deserve it!', 'put me on!']
+possibletexts = ['buy me!', '50% off!', 'only 99.95!', 'while stocks last!', 'click me!', 'you deserve it!', 'put me on!', '99% fat free', 'be yourself!'];
 function drawChoice(outfit, position, text){
     var c=document.getElementById("chooseCanvas_"+position);
     var ctx=c.getContext("2d");
@@ -276,7 +275,7 @@ function deselectChoice(id){
 }
 
 var frameDrawer;
-var currentLevel = 0;
+var currentLevel = 2;
 var setupinfo = false
 if (window.location.hash){
 	var protagonist = escape(window.location.hash.replace("#", ""));
@@ -317,6 +316,7 @@ function setUpGameScreen(){
 		correct[1] = temp;
 	}
 	for (var x=0; x<10; x++){
+		$("#chooseCanvas_"+x).removeClass('selected');
 		if (x == correct[0] || x == correct[1]){
 			newperson = level.generator();
 			if (x == correct[1]){
@@ -431,7 +431,8 @@ $(document).ready(function(){
 			storyTime = false;
 			$('#back').show();
 			$('#nexttext').text('Walk in the door');
-			$("#next").addClass("ui-state-disabled");
+			if (selected.length < 2)
+				$("#next").addClass("ui-state-disabled");
 		// Clicked to walk in the door
 		} else {
 			if (selected.length != 2){
@@ -495,7 +496,7 @@ $(document).ready(function(){
 			});
 		});
 		// Set up the hint timer
-		hint2timer = setTimeout("showHintButton(2)", 15000);
+		hint2timer = setTimeout("showHintButton(2)", 30000);
 	});
 	
 	$('#hint2').click(function(){
