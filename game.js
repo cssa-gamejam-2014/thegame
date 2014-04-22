@@ -357,10 +357,14 @@ function setUpGameScreen(){
 }
 
 function setUpStoryScreen(){
-	story = stories[currentLevel].replace("%PROT%", protagonist);
+    titleAndStory = stories[currentLevel];
+    title = titleAndStory[0];
+    story = titleAndStory[1];
+	story = story.replace("%PROT%", protagonist);
 	failure = failures[0].replace("%PROT%", protagonist);
 	success = successes[currentLevel].replace("%PROT%", protagonist);
 	
+    $("#levelname").html(title);
 	$('#storyscreen').html(story);
 	$('#failurescreen').html(failure);
 	$('#successscreen').html(success);
@@ -368,6 +372,7 @@ function setUpStoryScreen(){
 
 function endTheGame(){
 	clearInterval(framesDrawer);
+    $("#levelname").html("Done!");
 	$('#'+currentContainer).slideUp(function(){
 		$('#successscreen').slideDown(function(){
 			$('#successscreen').html("That's the last level so far. You're good at this!");
@@ -485,7 +490,7 @@ $(document).ready(function(){
 					finishedLevel = true;
 					$('#back').hide();
 					$('#successscreen').slideDown(function(){
-						$('#nexttext').text('Leave');
+						$('#nexttext').text('Next chapter');
 					});
 				});
 				

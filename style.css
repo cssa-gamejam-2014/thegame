@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
 	background: none repeat scroll 0 0 #E0E0E0;
+	font-family: Helvetica, sans-serif;
 }
 #gamecanvas {
     width: 100%;
@@ -30,16 +31,32 @@ body {
 	text-align: center;
 }
 .storytime {
-	font-family: Helvetica;
 	width: 40%;
 	margin: 0px auto;
 }
-.backbtn {
-	display:inline-block; float:left; margin-left: 120px; margin-top: 30px;
+
+.buttons {
+    margin-top: 30px;
+    display: table;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
+
+.buttons * {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 .nextbtn {
-	position:relative; display:block; float:right; margin-right: 120px; margin-top: 30px;
+    text-align: right;
 }
-.hintbtn {
-	
+
+.nextbtn * {
+    text-align: left;
+}
+
+#levelname {
+    font-weight: bold;
+    font-size: 20px;
 }
