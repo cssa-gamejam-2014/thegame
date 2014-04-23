@@ -32,7 +32,7 @@ function negativeminusonemod(start, modulo){
 	return start;
 }
 
-colours = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+colours = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
 allclothes = ['hat', 'shirt', 'pants', 'shoes'];
 
 levels = [
@@ -504,15 +504,19 @@ levels = [
 		lastIndex = order.indexOf(clothing.hat);
 		checkClothes = ['shirt', 'pants', 'shoes'];
 		
-		trueSoFar = checkClothes.forEach(function(entry){
-			if (!clothing[entry])
-				return false;
+		var trueSoFar = true; 
+		
+		checkClothes.forEach(function(entry){
+			if (!clothing[entry]){
+				trueSoFar = false;
+			}
 			thisIndex = order.indexOf(clothing[entry]);
 			if (!((lastIndex+1)%order.length == thisIndex)){
-				return false;
+				trueSoFar = false;
 			}
 			lastIndex = thisIndex;
 		});
+		console.log(trueSoFar + " after first round");
 		if (trueSoFar){
 			return true;
 		}
@@ -520,15 +524,16 @@ levels = [
 		lastIndex = order.indexOf(clothing.hat);
 		
 		trueSoFar = true;
-		trueSoFar = checkClothes.forEach(function(entry){
+		checkClothes.forEach(function(entry){
 			if (!clothing[entry])
-				return false;
+				trueSoFar = false;
 			thisIndex = order.indexOf(clothing[entry]);
 			if (!(negativeminusonemod(lastIndex, order.length) == thisIndex)){
-				return false;
+				trueSoFar = false;
 			}
 			lastIndex = thisIndex;
 		});
+		console.log(trueSoFar + " after second round");
 		return trueSoFar;
     },
     setup : function(){
@@ -540,6 +545,66 @@ levels = [
 		
 		return setupinfo;
 	}
+},
+	
+// LEVEL ELEVEN
+{
+    generator : function(){
+        person = []
+        
+		coloursNoRed = ['orange', 'yellow', 'green', 'blue', 'purple'];
+		coloursNoYellow = ['red', 'orange', 'green', 'blue', 'purple'];
+		
+		if (getRandom(2) == 0){
+			
+			person.pants = "red";
+			person.hat = colours[getRandom(colours.length)];
+		} else {
+			person.pants = coloursNoRed[getRandom(coloursNoRed.length)];
+		}
+		
+		if (getRandom(2) == 0){
+			
+			person.shoes = "yellow";
+			person.shirt = colours[getRandom(colours.length)];
+		} else {
+			person.shoes = coloursNoYellow[getRandom(coloursNoYellow.length)];
+		}
+
+        return person;
+    },
+    randgen : function(){
+        person = []
+        chanceOfWear = {hat: 50, shirt: 50, pants: 100, shoes: 100}
+        var clothes = ['hat', 'shirt', 'pants', 'shoes'];
+		
+        clothes.forEach(function(entry){
+            if (getRandom(100) < chanceOfWear[entry]){
+				person[entry] =  colours[getRandom(colours.length)];
+            }
+        });
+		
+        return person;
+    },
+    validator : function(clothing){
+		
+		if (clothing.hat){
+			if (!(clothing.pants == "red"))
+				return false;
+		} else {
+			if (clothing.pants == "red")
+				return false;
+		}
+		if (clothing.shirt){
+			if (!(clothing.shoes == "yellow"))
+				return false;
+		} else {
+			if (clothing.shoes == "yellow")
+				return false;
+		}
+		
+		return true;
+    }
 }];
 
 stories = [
@@ -562,7 +627,7 @@ stories = [
 	["Chapter Nine: The Last Piece", "<p>We approached the target building in the required costumes: purple hat and yellow shoes.</p><p>\"Something's not right,\" Jed whispered. \"Nobody else fits the pattern. Either the client smelt the code book index wrong, or the dress code was changed.\"</p><p>\"You're right. We should have known it wouldn't be that simple. We'll just have to crack the code ourselves.\"</p><p>\"Because my trash can doesn't already have enough green shoes.\" grumbled Jed sarcastically.</p>"],
 
     ["Chapter Ten: The Detonator!", "<p>It wasn't hard to spot the 'secret' base. It was the only building across the road with a line of bright colours queuing to enter.</p><p>\"We need to be quick,\" I urged, \"We don't know how much time there is left.\"</p><p>\"Stay calm, %PROT%, we need to concentrate.\" said Jed. \"Bob whatever said this would be a difficult code.\"</p><p>\"Put on this cologne,\" he added. \"We should mask our smell to avoid identification.\"</p>"],
-    ["Test", "Testing here."],
+    ["Chapter Eleven: A Lack of Recognition", "<p>On return to the client's office building, we were barred entry.</p><p>\"It's the cologne,\" I suggested, \"Our smell isn't recognised anymore.\"</p><p>\"Looks like we're cracking another dress code\" sighed Jed.</p>"],
     ["Test", "Testing here."],
     ["Test", "Testing here."],
     ["Test", "Testing here."],
@@ -587,9 +652,13 @@ successes = ["<h1>No Questions Asked</h1><p>Jed and I joined the back of the que
 
 "<h1>Watched</h1><p>As we retrieved the next package, I couldn't shake the feeling we were being watched. But we left the building without challenge, once again.</p>", 
 
-"<h1>The Trap!</h1><p>The moment we entered the building, the guards closed the doors behind us. More guards emerged to surround us, cutting off any option of flight.</p><p>...</p><p>His preference for senses was clearly evident: he had the smallest eyes I'd ever seen, next to the largest nose I'd ever seen. His choice of clothing screamed super villain.</p><p>\"Good afternoon my dears! I'm your host, Bob one. What a lovely day to watch the destruction of the human race! From this tower you will view my brilliant plan come to fruition, whilst helplessly tied to your chairs.\"</p><p>\"Just give us the detonator we're here to collect, and no-one will get hurt.\" demanded Jed, unconvincingly.</p><p>Bob one ignored him. \"You see, my dear Bobs, I was your 'informer'. I let you collect the seeds of extermination, despite the extreme costs involved with obtaining them. See, they are indestructable by any technology available in this world. And as they are remotely activated, it doesn't matter where they are. It's all the more fitting the gas should originate from your headquarters!\" He was clearly very proud of himself.</p><p>\"I even made you hunt after a non-existant 'detonator'! However, your code breaking teams have come a long way - I sent you the wrong dress code for this building and it took you less than a day to crack it.\"</p><p>\"Technically if they're remotely activated, there must be a detonator.\" I interjected.</p><p>\"WRONG WRONG WRONG!\" he said as he swooped on me. \"It's on a countdown, controlled by our secret base across the road.\"</p><p>\"Maybe I shouldn't have mentioned that.\" He paused for a moment. \"No matter: your hands are tied, you wouldn't be able to find the secret base, and it's protected by the strongest dress code ever invented.\"</p><p>He turned to exited the room, with a twirl of his cape. \"Enjoy the show!\" he said, closing the door behind. We were alone.</p><p>\"Their eye sight really is rubbish.\" remarked Jed. \"These knots are terrible!\"</p><p>I joined Jed in slipping out of my bindings.</p>", 
+"<h1>The Trap!</h1><p>The moment we entered the building, the guards closed the doors behind us. More guards emerged to surround us, cutting off any option of flight.</p><p>...</p><p>His preference for senses was clearly evident: he had the smallest eyes I'd ever seen, next to the largest nose I'd ever seen. His choice of clothing screamed super villain.</p><p>\"Good afternoon my dears! I'm your host, Bob one. What a lovely day to watch the destruction of the human race! From this tower you will view my brilliant plan come to fruition, whilst helplessly tied to your chairs.\"</p><p>\"Just give us the detonator we're here to collect, and no-one will get hurt.\" demanded Jed, unconvincingly.</p><p>Bob one ignored him. \"You see, my dear Bobs, I was your 'informer'. I let you collect the seeds of extermination, despite the extreme costs involved with obtaining them. See, they are indestructable by any technology available in this world. And as they are remotely activated, it doesn't matter where they are. It's all the more fitting the gas should originate from your headquarters!\" He was clearly very proud of himself.</p><p>\"I even made you hunt after a non-existant 'detonator'! However, your code breaking teams have come a long way - I sent you the wrong dress code for this building and it took you less than a day to crack it.\"</p><p>\"Technically if they're remotely activated, there must be a detonator.\" I interjected.</p><p>\"WRONG WRONG WRONG!\" he yelled as he swooped on me. \"It's on a countdown, controlled by our secret base across the road.\"</p><p>\"Maybe I shouldn't have mentioned that.\" He paused for a moment. \"No matter: your hands are tied, you wouldn't be able to find the secret base, and it's protected by the strongest dress code ever invented.\"</p><p>He turned to exited the room, with a twirl of his cape. \"Enjoy the show!\" he said, closing the door behind. We were alone.</p><p>\"Their eye sight really is rubbish.\" remarked Jed. \"These knots are terrible!\"</p><p>I joined Jed in slipping out of my bindings.</p>", 
 
-"<h1>Big Buttons</h1><p>It wasn't hard to spot the countdown console - inside a room helpfully labelled \"CONTROL ROOM\" in large red letters. A large screen was counting down: 50 seconds, 49 seconds, 48 seconds ...</p><p>The console consisted of two large red buttons labelled \"Cancel\" and \"Detonate\", and a large touch screen. I quickly hit the cancel button.</p><p>A dialog appeared on the touch screen. \"Dress Code Required: Please drag the appropriate clothes onto the figure.\"</p><p>TO BE COMPLETED SOON</p>", "Success! You got into the building.", "Success! You got into the building.", "Success! You got into the building."];
+"<h1>Big Buttons</h1><p>It wasn't hard to spot the countdown console - inside a room helpfully labelled \"CONTROL ROOM\" in large red letters. A large screen was counting down: 50 seconds, 49 seconds, 48 seconds ...</p><p>The console consisted of two large red buttons labelled \"Cancel\" and \"Detonate\", and a large touch screen. I quickly hit the cancel button.</p><p>A dialog appeared on the touch screen. \"Dress Code Required: Please drag the appropriate clothes onto the figure.\"</p><p>Suddenly the screen and console died. Jed had pulled out the power cord. \"We had no time!\" explained Jed, anticipating my protest.</p><p>\"Look around\" I said. \"We had to find the technology he was talking about and disable it, so it can't be used to activate the detonation later.\"</p><p>\"Like this?\" asked Jed, reaching underneath the console and ripping out a long metal rod. \"It's got another two red buttons, but no writing.\"</p><p>\"Wait, these buttons have a strong smell on them...\"</p><p>\"I <em>KNEW</em> there must be a detonator!\" I said. \"Let's get out of here before Bob whatsits returns.\"</p>", 
+
+"<h1>Disarmament</h1><p>The client was extremely relieved when we arrived at his office. \"You were gone for a long time, I was getting worried! Why do you smell funny?\"</p><p>I explained everything, and presented the metal rod. The client smelt the two buttons individually for a long time, pondering their meaning. He then quickly sniffed each, as if to double check.</p><p>\"This button ends your species,\" he said, \"But the other disintegrates the seeds - in effect safely disposing of them.\"</p><p>He offered it back to me. \"You can have the honours. Just press <em>THAT</em> button,\" he said, pointing with both hands to make sure he was understood.</p><p>I pressed the button nervously. The eggs disappeared in a puff. We had saved the world!</p><h2>THE END.</h2><h3>... for now ... </h3>", 
+
+"Success! You got into the building.", "Success! You got into the building."];
 
 hints = [
 // Level 1
@@ -621,7 +690,7 @@ hints = [
 // Level 10
 ["\"I think there's an order on the colours again,\" suggested Jed.", 
 "While there was an order on the colours, there seem to be disagreement on how to apply the order."]
-
+// Level 11
 
 
 
@@ -638,5 +707,6 @@ buildings = [
 ["building_ground", "building_windows"],
 ["tower_ground", "tower_windows"],
 ["secret_ground", "secret_windows"],
+["office_ground", "office_windows"]
 
 ]
