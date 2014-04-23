@@ -364,8 +364,8 @@ function setUpStoryScreen(){
 	failure = failures[0].replace("%PROT%", protagonist);
 	success = successes[currentLevel].replace("%PROT%", protagonist);
 	
-    $("#levelname").html(title);
-	$('#storyscreen').html(story);
+    $("#backtext").html(title);
+	$('#storyscreen').html("<h1>"+title+"</h1>"+story);
 	$('#failurescreen').html(failure);
 	$('#successscreen').html(success);
 }
@@ -434,7 +434,7 @@ $(document).ready(function(){
 				setUpGameScreen();
 				currentContainer = 'storyscreen';
 				storyTime = true;
-				$('#back').hide();
+				$('#back').addClass("ui-state-disabled");
 				$('#storyscreen').slideDown(function(){
 					$('#nexttext').text('Go to the costume store');
 					$("#next").removeClass("ui-state-disabled");
@@ -454,7 +454,7 @@ $(document).ready(function(){
 				$('#gamescreen').slideDown();
 			});
 			storyTime = false;
-			$('#back').show();
+			$('#back').removeClass("ui-state-disabled");
 			$('#nexttext').text('Walk in the door');
 			$("#next").addClass("ui-state-disabled");
 			
@@ -468,7 +468,7 @@ $(document).ready(function(){
 				$('#gamescreen').slideDown();
 			});
 			storyTime = false;
-			$('#back').show();
+			$('#back').removeClass("ui-state-disabled");
 			$('#nexttext').text('Walk in the door');
 			if (characters[0] == -1 || characters[1] == -1)
 				$("#next").addClass("ui-state-disabled");
@@ -488,7 +488,7 @@ $(document).ready(function(){
 				$('#gamescreen').slideUp(function(){
 					currentContainer = 'successscreen';
 					finishedLevel = true;
-					$('#back').hide();
+					$('#back').addClass("ui-state-disabled");
 					$('#successscreen').slideDown(function(){
 						$('#nexttext').text('Next chapter');
 					});
@@ -509,6 +509,11 @@ $(document).ready(function(){
 	});
 	
 	$('#back').click(function(){
+		
+		// Don't work if disabled
+		if ($(this).hasClass("ui-state-disabled"))
+			return true;
+		
 		if (!storyTime){
 			$('#'+currentContainer).slideUp(function(){
 				$('#storyscreen').slideDown(function(){
@@ -516,7 +521,7 @@ $(document).ready(function(){
 				});
 			});
 			storyTime = true;
-			$('#back').hide();
+			$('#back').addClass("ui-state-disabled");
 			$('#nexttext').text('Go to the costume store');
 			$("#next").removeClass("ui-state-disabled");
 		} else {
