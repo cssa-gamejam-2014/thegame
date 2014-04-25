@@ -691,6 +691,8 @@ hints = [
 ["\"I think there's an order on the colours again,\" suggested Jed.", 
 "While there was an order on the colours, there seem to be disagreement on how to apply the order."]
 // Level 11
+["\"There seems to be a relationship between the bottom half and the top half,\" observed Jed.", 
+"There were two relationships between the bottom half and the top half of their costumes. One for whether to wear a hat, another for whether to wear a shirt."]
 
 
 
