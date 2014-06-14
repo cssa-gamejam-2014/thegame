@@ -291,7 +291,7 @@ if (window.location.hash){
 }
 // Let Katie go to level 11
 if (protagonist == 'Katie'){
-	currentLevel = 11;
+	currentLevel = 10;
 }
 var storyTime = true;
 var finishedLevel = false;
@@ -383,11 +383,12 @@ function transitionScene(nextScene){
 			$('#storyscreen').slideUp(function(){
 				
 				// redraw game screen to fix up Chrome
-				if (chromeFirstRedraw)
+				if (chromeFirstRedraw){
 					for (var x=0; x<10; x++){
 						drawChoice(choices[x], x);
 					}
-				
+					chromeFirstRedraw = false;
+				}
 				$('#back').removeClass("ui-state-disabled");
 				transitionSceneTo(nextScene);
 			});
@@ -452,12 +453,18 @@ function transitionSceneTo(nextScene){
 		case scenes.store:
 	
 			$('#nexttext').text('Walk in the door');
-			if (characters[0] == -1 || characters[1] == -1)
+			if (characters[0] == -1 || characters[1] == -1){
 				$("#next").addClass("ui-state-disabled");
-			
+			} else {
+				$("#next").removeClass("ui-state-disabled");
+			}
 			// Set up the hint timer
-			if (!hint1timer)
-				hint1timer = setTimeout("showHintButton(1)", 15000);
+			if (!hint1timer){
+				console.log("Hint1 timer set up");
+				hint1timer = setTimeout("showHintButton(1)", 1000); //15000
+			} else {
+				
+			}
 			
 			$('#gamescreen').slideDown(function(){
 				$("#back").removeClass("ui-state-disabled");
@@ -481,23 +488,27 @@ function transitionSceneTo(nextScene){
 			// Got the puzzle right
 			
 			// Clear hint timers
-			clearTimeout(hint1timer);
-			clearTimeout(hint2timer);
+			window.clearTimeout(hint1timer);
+			window.clearTimeout(hint2timer);
 			hint1timer = 0;
 			hint2timer = 0;
 			$('#hint1').hide();
 			$('#hint2').hide();
+			console.log("hints being hidden");
 			
 			// Hide game screen, show success
 			$('#back').addClass("ui-state-disabled");
-			$('#nexttext').text('Next chapter');
-			$('#successscreen').slideDown(function(){
-				$("#next").removeClass("ui-state-disabled");
-			});
 			
-			if (currentLevel >= levels.length){
-				endTheGame();
-				return;
+			
+			if (currentLevel+1 >= levels.length){
+				$('#successscreen').slideDown(function(){
+					endTheGame();
+				});
+			} else {
+				$('#nexttext').text('Next chapter');
+				$('#successscreen').slideDown(function(){
+					$("#next").removeClass("ui-state-disabled");
+				});
 			}
 			
 			break;
@@ -511,11 +522,12 @@ function transitionSceneTo(nextScene){
 
 function endTheGame(){
 	clearInterval(framesDrawer);
-	$("#next").addClass("ui-state-disabled");
 	$('#nexttext').text('You won the game!');
+	$("#next").addClass("ui-state-disabled");
 }
 
 function showHintButton(number){
+	console.log("Showing hint button "+number);
 	$('#hint'+number).slideDown();
 }
 
@@ -584,7 +596,8 @@ $(document).ready(function(){
 			transitionScene(scenes.hint);
 		});
 		// Set up the hint timer
-		hint2timer = setTimeout("showHintButton(2)", 30000);
+		console.log("Hint2 timer set up");
+		hint2timer = setTimeout("showHintButton(2)", 10000); //30000
 	});
 	
 	$('#hint2').click(function(){
