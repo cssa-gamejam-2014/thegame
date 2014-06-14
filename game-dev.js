@@ -495,7 +495,7 @@ function transitionSceneTo(nextScene){
 				$("#next").removeClass("ui-state-disabled");
 			});
 			
-			if (currentLevel+1 >= levels.length){
+			if (currentLevel >= levels.length){
 				endTheGame();
 				return;
 			}
