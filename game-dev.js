@@ -483,6 +483,8 @@ function transitionSceneTo(nextScene){
 			// Clear hint timers
 			clearTimeout(hint1timer);
 			clearTimeout(hint2timer);
+			hint1timer = 0;
+			hint2timer = 0;
 			$('#hint1').hide();
 			$('#hint2').hide();
 			
