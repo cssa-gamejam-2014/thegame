@@ -144,7 +144,7 @@ function draw_frame() {
 		}
 		
 		// Create new character if necessary
-		if (newLeft < WALK_WIDTH+25 && $(this).hasClass('endCharacter')){
+		if (newLeft < WALK_WIDTH-175 && $(this).hasClass('endCharacter')){
 			$(this).removeClass('endCharacter');
 			
 			drawNewPerson();
@@ -156,7 +156,7 @@ function draw_frame() {
 function drawNewPerson(){
 	personhtml = $("<div></div>");
 	personhtml.attr('class', 'walkingCharacter endCharacter');
-	personhtml.css('left', WALK_WIDTH-175);
+	personhtml.css('left', WALK_WIDTH);
 	personhtml.appendTo("#walkingscreen");
 	var new_person = levels[currentLevel].generator();
 	while (equalPeople(new_person, choices[correct[0]]) || equalPeople(new_person, choices[correct[1]])) {
@@ -274,7 +274,7 @@ var setupinfo = false
 if (window.location.hash){
 	var protagonist = escape(window.location.hash.replace("#", ""));
 } else {
-	var protagonist = "Alex";
+	var protagonist = null;
 }
 // Let Katie go to level 11
 if (protagonist == 'Katie'){
@@ -363,11 +363,20 @@ function setUpStoryScreen(){
 	$('#successscreen').html(success);
 }
 var scenes = {"story":0, "store":1, "hint":2, "failure":3, "success":4};
-var sceneIDs = {"story":'#storyscreen', "store":'#gamescreen', "hint":'#hintscreen', "failure":'#failurescreen', "success":'#successscreen'};
-currentScene = scenes.story;
+var sceneIDs = {"name": '#namescreen', "story":'#storyscreen', "store":'#gamescreen', "hint":'#hintscreen', "failure":'#failurescreen', "success":'#successscreen'};
+currentScene = null;
 chromeFirstRedraw = true;
 function transitionScene(nextScene){
 	switch(currentScene){
+		case scenes.name:
+			protagonist = escape($('#username').val());
+			$('#namescreen').slideUp(function(){
+				transitionSceneTo(nextScene);
+				setUpStoryScreen();
+				setUpGameScreen();
+				framesDrawer = window.setInterval(draw_frame, 1000 / TARGET_FRAMERATE);
+			});
+			break;
 		case scenes.story:
 			$('#storyscreen').slideUp(function(){
 				
@@ -435,11 +444,18 @@ function transitionScene(nextScene){
 
 function transitionSceneTo(nextScene){
 	switch(nextScene){
+		case scenes.name:
+			$('#nexttext').text('Let\'s play!');
+			$('#namescreen').slideDown(function(){
+				$('#next').show();
+			});
+			break;
 		case scenes.story:
 			// Either finished previous level, or back to reading story
 			$('#back').addClass("ui-state-disabled");
 			$('#nexttext').text('Go to the costume store');
 			$('#storyscreen').slideDown(function(){
+				$("#next").show();
 				$("#next").removeClass("ui-state-disabled");
 			});
 			break;
@@ -453,8 +469,7 @@ function transitionSceneTo(nextScene){
 			}
 			// Set up the hint timer
 			if (!hint1timer){
-				console.log("Hint1 timer set up");
-				hint1timer = setTimeout("showHintButton(1)", 1000); //15000
+				hint1timer = setTimeout("showHintButton(1)", 15000);
 			} else {
 				
 			}
@@ -523,7 +538,7 @@ function showHintButton(number){
 }
 
 $(document).ready(function(){
-	WALK_WIDTH = $('#levelscreen').width() - 400;
+	WALK_WIDTH = $('#levelscreen').width();
 	
 	// Selection code for choices
 	$('.chooseCanvas').click(function(){
@@ -588,7 +603,7 @@ $(document).ready(function(){
 			transitionScene(scenes.hint);
 		});
 		// Set up the hint timer
-		hint2timer = setTimeout("showHintButton(2)", 10000); //30000
+		hint2timer = setTimeout("showHintButton(2)", 30000);
 	});
 	
 	$('#hint2').click(function(){
@@ -607,12 +622,17 @@ $(document).ready(function(){
 		setupinfo = levels[currentLevel].setup();
 	}
 	
-	setUpStoryScreen();
-	setUpGameScreen();
 	
-	// Animation initialisation
+	// Ask for name if it hasn't been provided
+	if (protagonist == null){
+		transitionSceneTo(scenes.name);
+	} else {
+		transitionSceneTo(scenes.story);
+		setUpStoryScreen();
+		setUpGameScreen();
+		framesDrawer = window.setInterval(draw_frame, 1000 / TARGET_FRAMERATE);
+	}
 
-	framesDrawer = window.setInterval(draw_frame, 1000 / TARGET_FRAMERATE);
 	
 	inSelection = true;
 });

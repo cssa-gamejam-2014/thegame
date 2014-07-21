@@ -16,9 +16,9 @@
 		
 		<div style='padding-bottom: 10px'>
         <div id=levelscreen>
-			<div id="walkingscreen" style="position: absolute; top: 200px; left:400px;">
+			<div id="walkingscreen" style="position: relative; top: 200px; left:0px; height:200px; overflow: hidden;">
 			</div>
-			<div id=scenery style="position: relative">
+			<div id=scenery style="position: absolute; top: 0px; left: 0px;">
 				<img id="groundfloor" src='graphics/building/bankgroundfloor.png' style="position: absolute; top: 200px;">
 				<img id="windows" src='graphics/building/bankwindows.png' style="position: absolute; top: 0px; overflow: hidden;">
 			</div>
@@ -33,7 +33,7 @@
         <div class='nextbtn'>
         <button id='hint1' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only hintbtn" role="button" aria-disabled="false" style="display: none;"><span class="ui-button-text"  id="hint1text">"Jed, any clues?"</span></button>
         <button id='hint2' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only hintbtn" role="button" aria-disabled="false" style="display: none;"><span class="ui-button-text"  id="hint2text">Blinding flash of inspiration</span></button>
-        <button id='next' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style=""><span class="ui-button-text"  id="nexttext">Go to the costume store</span></button>
+        <button id='next' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" style='display: none;'><span class="ui-button-text"  id="nexttext">Go to the costume store</span></button>
         </div>
         </div>
         
@@ -59,7 +59,14 @@
 			</div>
         </div>
         </br>
-        <div id='storyscreen' class='storytime'>
+        <div id='storyscreen' class='storytime' style='display: none;'>
+        </div>
+        <div id='namescreen' class='storytime' style='display: none;'>
+			<h1>Hey there!</h1>
+			
+			<p>What's your name?</p>
+			
+			<input id='username' type='text' class='ui-widget ui-state-default ui-corner-all'>
         </div>
         <div id='failurescreen' class='storytime' style='display: none;'>
         </div>
