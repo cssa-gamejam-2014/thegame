@@ -1,4 +1,4 @@
-var TARGET_FRAMERATE=25;
+
 camera = {
 	// distances in metres
 	// "top" and "right" are both screen edge locations in world form
@@ -13,9 +13,9 @@ camera = {
 people = [];
 last_person_spawn_time = 0;
 spawn_rate = 0.5;
-// MAXIMUM STRENGTH
-// MAXIMUM ARMOUR
-maximum_speed = 80;
+var TARGET_FRAMERATE=25;
+var SPEED = 80;
+var WALK_WIDTH = null;
 
 possibletexts = ['buy me!', '50% off!', 'only 99.95!', 'while stocks last!', 'click me!', 'you deserve it!', 'put me on!', '99% fat free', 'be yourself!'];
 function drawChoice(outfit, position, text){
@@ -40,20 +40,6 @@ function drawChoice(outfit, position, text){
 }
 
 function drawCharacter(outfit, position){
-    var c=document.getElementById("character_"+position);
-    var ctx=c.getContext("2d");
-	ctx.clear();
-	
-    var body=document.getElementById("body");
-    ctx.drawImage(body,0,0);
-	
-    for (var key in outfit){
-        var object = document.getElementById(key+"_"+outfit[key]);
-        ctx.drawImage(object, 0, 0);
-    }
-	ctx.rotate(-Math.PI/2);
-	ctx.textAlign = "center";
-	ctx.font="20px Helvetica";
 	
 	if (position == 1){
 		name = protagonist;
@@ -61,20 +47,43 @@ function drawCharacter(outfit, position){
 		name = "Jed";
 	}
 	
-	ctx.fillText(name,-105,25);
-	ctx.rotate(Math.PI/2);
+	var charSpan = $();
+	body = $("#body").attr("src");
+	
+	var img = $('<img>');
+	img.attr('src', body);
+	img.attr('class', 'clothabsolute');
+	img.css('left', 175*(position-1));
+	img.appendTo("#characterhtml_"+position);
+	
+	var charname = $('<span>'+name+'</span>');
+	charname.attr('class', 'clothabsolute textrotate');
+	
+	// -18 offset is because for some reason the text rotation means the names look different distances
+	charname.css('left', 175*(position-1)-28*(2-position));
+	charname.appendTo("#characterhtml_"+position);
+	
+    for (var key in outfit){		
+        var object = $("#"+key+"_"+outfit[key]).attr("src");
+        img = $('<img>');
+		img.attr('src', object);
+		img.attr('class', 'clothabsolute');
+		img.css('left', 175*(position-1));
+		img.appendTo("#characterhtml_"+position);
+    }
+	
 }
 
 function clearChoice(position){
 	var c=document.getElementById("chooseCanvas_"+position);
 	var ctx=c.getContext("2d");
 	ctx.clear();
+	
 }
 
 function clearCharacter(position){
-	var c=document.getElementById("character_"+position);
-	var ctx=c.getContext("2d");
-	ctx.clear();
+	
+	$("#characterhtml_"+position).empty();
 }
 
 function equalPeople(person1, person2){
@@ -92,6 +101,7 @@ function draw_person(ctx, outfit) {
     }
 }
 
+
 // Taken from http://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
 CanvasRenderingContext2D.prototype.clear = 
   CanvasRenderingContext2D.prototype.clear || function (preserveTransform) {
@@ -104,88 +114,67 @@ CanvasRenderingContext2D.prototype.clear =
 
     if (preserveTransform) {
       this.restore();
-    }           
-};
-
-function draw_frame_wrapper(ctx, elem) {
-    var prev_time = Date.now() / 1000;
-    function inner() {
-        ct = Date.now() / 1000;
-        dt = ct - prev_time;
-        draw_frame(ctx, elem, dt);
-        prev_time = ct;
     }
-    return inner;
+  }
+var lastlevel = 0;
+function draw_frame() {
+	
+	// Do the HTML version
+	
+	if ($(".walkingCharacter").length == 0){
+		drawNewPerson();
+	}
+	
+	$(".walkingCharacter").each(function(){
+		offset = $(this).offset();
+		currentLeft = offset.left;
+		newLeft = currentLeft - SPEED / TARGET_FRAMERATE
+		
+		// NOT SURE WHY THIS HACK IS NEEDED TO PASS EXACTLY 400
+		if (newLeft < 403 && newLeft > 400){
+			newLeft = 399;
+		}
+		
+		if (newLeft < 225){
+			// Delete if necessary
+			$(this).remove();
+		} else {
+			// Move otherwise			
+			$(this).offset({ top: offset.top, left: newLeft});
+		}
+		
+		// Create new character if necessary
+		if (newLeft < WALK_WIDTH+25 && $(this).hasClass('endCharacter')){
+			$(this).removeClass('endCharacter');
+			
+			drawNewPerson();
+		}
+	});
+	// Create character if necessary
 }
 
-var lastlevel = 0;
-function draw_frame(ctx, elem, dt) {
-	
-    function to_screen(xy) {
-        // convert world coordinates into screen coordiantes
-        return [
-            (xy[0] - camera.left) * camera.zoom,
-            (camera.top - xy[1]) * camera.zoom
-        ];
-    }
-
-    // this code from
-    // https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
-    // everything except the clearRect call is unnecessary unless we have
-    // uncleared transforms, in which case clearrect's arguments will get
-    // transformed according to those transforms which we have applied (and we
-    // thus need to make a new "reset" transform)
-    // Store the current transformation matrix
-    // ctx.save()
-
-    // Use the identity matrix while clearing the canvas
-    // ctx.setTransform(1, 0, 0, 1, 0, 0)
-    ctx.clearRect(0, 0, camera.width, camera.height);
-	
-	// if the level has changed, clear all people
-	if (currentLevel != lastlevel){
-		people = [];
-		lastlevel = currentLevel;
+function drawNewPerson(){
+	personhtml = $("<div></div>");
+	personhtml.attr('class', 'walkingCharacter endCharacter');
+	personhtml.css('left', WALK_WIDTH-175);
+	personhtml.appendTo("#walkingscreen");
+	var new_person = levels[currentLevel].generator();
+	while (equalPeople(new_person, choices[correct[0]]) || equalPeople(new_person, choices[correct[1]])) {
+		new_person = levels[currentLevel].generator();			
 	}
-
-    // move everyone forward
-    for (var i = 0; i < people.length; i++) {
-        people[i].left -= maximum_speed * dt;
-        if (people[i].left < 0) {
-            people.splice(i, 1);
-        }
+	
+	var img = $('<img>');
+	img.attr('src', body);
+	img.attr('class', 'clothabsolute');
+	img.appendTo(personhtml);
+	
+    for (var key in person){		
+        var object = $("#"+key+"_"+person[key]).attr("src");
+        img = $('<img>');
+		img.attr('src', object);
+		img.attr('class', 'clothabsolute');
+		img.appendTo(personhtml);
     }
-    var ct = Date.now() / 1000;
-    // LETS GET THIS PARTY SPAWNED
-    if ((ct - last_person_spawn_time) > 1/spawn_rate) {
-        last_person_spawn_time = ct;
-        var new_person = levels[currentLevel].generator();
-		while (equalPeople(new_person, choices[correct[0]]) || equalPeople(new_person, choices[correct[1]])) {
-			new_person = levels[currentLevel].generator();			
-		}
-        new_person.left = elem.width;
-        people.push(new_person);
-    }
-
-    // draw the people in our queue
-    for (var i = 0; i < people.length; i++) {
-        ctx.save();
-        ctx.translate(people[i].left, elem.height - 200);
-        draw_person(ctx, people[i]);
-        ctx.restore();
-    }
-
-    var groundfloor = document.getElementById(buildings[currentLevel][0]);
-    var windows = document.getElementById(buildings[currentLevel][1]);
-    // Draw the upper levels of the building
-    for (var offset = elem.height - windows.height; offset > -windows.height; offset -= windows.height) {
-        ctx.drawImage(windows, 0, offset);
-    }
-    // Draw the ground floor of the building
-    ctx.drawImage(groundfloor, 0, elem.height - groundfloor.height);
-
-    // Restore the transform
-    // ctx.restore()
 }
 
 function on_resize_wrapper(ctx, elem) {
@@ -262,19 +251,17 @@ function deselectChoice(id){
 	drawChoice(choices[id], id);
 	
 	// redraw characters
-	for (var x = 1; x < 3; x++){
-		// clear choice selection
-		var c=document.getElementById("character_"+x);
-		var ctx=c.getContext("2d");
-		ctx.clear();
-	}
 	for (var x = 0; x < 2; x++){
-		if (characters[x] != -1)
+		if (characters[x] != -1){
+			clearCharacter(x+1);
 			drawCharacter(choices[characters[x]], x+1);
+		}
 	}
 	for (var x = 0; x < 2; x++){
-		if (characters[x] == -1)
+		if (characters[x] == -1){
+			clearCharacter(x+1);
 			drawCharacter([], x+1);
+		}
 	}
 	
 	if (characters[0] == -1 || characters[1] == -1)
@@ -300,7 +287,7 @@ var currentContainer = "storyscreen";
 var hint1timer;
 var hint2timer;
 
-function setUpGameScreen(){
+function setUpGameScreen(){	
 	choices = [];
 	correct = [];
 	characters = [-1, -1];
@@ -358,6 +345,8 @@ function setUpGameScreen(){
 			drawChoice(invalid, x);
 		}
 	}
+	
+	$("#walkingscreen").empty();
 }
 
 function setUpStoryScreen(){
@@ -424,6 +413,10 @@ function transitionScene(nextScene){
 			
 			// Progress to next level
 			currentLevel++;
+			
+			// Put up correct backdrop
+			$('#groundfloor').attr('src', $('#'+buildings[currentLevel][0]).attr('src'));
+			$('#windows').attr('src', $('#'+buildings[currentLevel][1]).attr('src'));
 			
 			
 			$('#successscreen').slideUp(function(){
@@ -494,7 +487,6 @@ function transitionSceneTo(nextScene){
 			hint2timer = 0;
 			$('#hint1').hide();
 			$('#hint2').hide();
-			console.log("hints being hidden");
 			
 			// Hide game screen, show success
 			$('#back').addClass("ui-state-disabled");
@@ -527,11 +519,11 @@ function endTheGame(){
 }
 
 function showHintButton(number){
-	console.log("Showing hint button "+number);
 	$('#hint'+number).slideDown();
 }
 
 $(document).ready(function(){
+	WALK_WIDTH = $('#levelscreen').width() - 400;
 	
 	// Selection code for choices
 	$('.chooseCanvas').click(function(){
@@ -545,7 +537,7 @@ $(document).ready(function(){
 	});
 	
 	// Selection code for choices
-	$('.characterCanvas').click(function(){
+	$('.characterSpan').click(function(){
 		var character = $(this).attr('choice');
 		
 		deselectChoice(characters[character]);
@@ -596,7 +588,6 @@ $(document).ready(function(){
 			transitionScene(scenes.hint);
 		});
 		// Set up the hint timer
-		console.log("Hint2 timer set up");
 		hint2timer = setTimeout("showHintButton(2)", 10000); //30000
 	});
 	
@@ -620,14 +611,8 @@ $(document).ready(function(){
 	setUpGameScreen();
 	
 	// Animation initialisation
-	var elem = document.querySelector('#gamecanvas');
-	var ctx = elem.getContext('2d');
 
-	on_resize = on_resize_wrapper(ctx, elem);
-	on_resize();
-	var resizeListener = window.addEventListener('resize', on_resize, false);
-
-	framesDrawer = window.setInterval(draw_frame_wrapper(ctx, elem), 1000 / TARGET_FRAMERATE);
+	framesDrawer = window.setInterval(draw_frame, 1000 / TARGET_FRAMERATE);
 	
 	inSelection = true;
 });
