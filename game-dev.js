@@ -406,6 +406,10 @@ function setUpStoryScreen(){
 }
 
 function boot_up_level(){
+	if (levels[currentLevel] == null){
+		endTheGame();
+	}
+	
 	// Set up info for the level
 	if (levels[currentLevel].setup){
 		setupinfo = levels[currentLevel].setup();
@@ -584,7 +588,9 @@ function transitionSceneTo(nextScene){
 }
 
 function endTheGame(){
-	clearInterval(framesDrawer);
+	if (typeof framesDrawer !== 'undefined'){
+		clearInterval(framesDrawer);
+	}
 	$('#nexttext').text('You won the game!');
 	$('#successscreen').slideUp(function(){
 		$('#successscreen').html('<h1>Well done!</h1><p>You\'ve finished all of the levels so far! You are a solid code cracker!</p>');
