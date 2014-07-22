@@ -24,6 +24,20 @@ function shuffle(toshuffle) {
     return array;
 }
 
+function pick_but_skip(item_to_skip, items_to_assign, colour_order, partial_person){	
+	counter = 5 - items_to_assign.length;
+	items_index = 0;
+	for (var x = 0; x < items_to_assign.length; x++){
+		if (counter == item_to_skip){
+			counter++;
+		}
+		partial_person[items_to_assign[x]] = colour_order[counter];
+		counter++;
+	}
+	
+	return partial_person;
+}
+
 function negativeminusonemod(start, modulo){
 	start = start - 1;
 	if (start < 0){
@@ -595,7 +609,139 @@ levels = [
 		
 		return true;
     }
-}];
+},
+	
+// LEVEL TWELVE
+{
+    generator : function(){
+        person = []
+        
+        item_choice = getRandom(15);
+        if (item_choice == 0){
+			person.hat = setupinfo['colours'][2];
+			person.shirt = setupinfo['colours'][3];
+			person.pants = setupinfo['colours'][4];
+			person.shoes = setupinfo['colours'][5];
+		} else if (item_choice <= 4){
+			person.hat = setupinfo['colours'][1];
+			// Skip one of 2 to 5
+			item_to_skip = item_choice+1;
+			items_to_assign = ['shirt', 'pants', 'shoes'];
+			
+			person = pick_but_skip(item_to_skip, items_to_assign, setupinfo['colours'], person);
+		} else if (item_choice <= 5){
+			person.hat = setupinfo['colours'][0];
+			person.shirt = setupinfo['colours'][3];
+			person.pants = setupinfo['colours'][4];
+			person.shoes = setupinfo['colours'][5];
+		} else if (item_choice <= 8){
+			person.hat = setupinfo['colours'][0];
+			person.shirt = setupinfo['colours'][2];
+			// Skip one of 3 to 5
+			item_to_skip = item_choice-3;
+			items_to_assign = ['pants', 'shoes'];
+			
+			person = pick_but_skip(item_to_skip, items_to_assign, setupinfo['colours'], person);
+		} else if (item_choice <= 9){
+			person.hat = setupinfo['colours'][0];
+			person.shirt = setupinfo['colours'][1];
+			person.pants = setupinfo['colours'][4];
+			person.shoes = setupinfo['colours'][5];
+		} else if (item_choice <= 11){
+			person.hat = setupinfo['colours'][0];
+			person.shirt = setupinfo['colours'][1];
+			person.pants = setupinfo['colours'][3];
+			// Skip one of 3 to 5
+			item_to_skip = item_choice-6;
+			items_to_assign = ['shoes'];
+			
+			person = pick_but_skip(item_to_skip, items_to_assign, setupinfo['colours'], person);
+		} else {
+			person.hat = setupinfo['colours'][0];
+			person.shirt = setupinfo['colours'][1];
+			person.pants = setupinfo['colours'][2];
+			person.shoes = setupinfo['colours'][item_choice-9];			
+		}
+		
+        return person;
+    },
+    randgen : function(){
+		
+		// Do the same processes, but switch up the colour order
+		firstnum = getRandom(6);
+		secondnum = getRandom(6);
+		while (secondnum == firstnum){
+			secondnum = getRandom(6);
+		}
+		
+		fake_colours = setupinfo['colours'].slice(0);
+		swapvar = fake_colours[firstnum];
+		fake_colours[firstnum] = fake_colours[secondnum];
+		fake_colours[secondnum] = swapvar;
+		
+        person = []
+        
+        item_choice = getRandom(15);
+        if (item_choice == 0){
+			person.hat = fake_colours[2];
+			person.shirt = fake_colours[3];
+			person.pants = fake_colours[4];
+			person.shoes = fake_colours[5];
+		} else if (item_choice <= 4){
+			person.hat = fake_colours[1];
+			// Skip one of 2 to 5
+			item_to_skip = item_choice+1;
+			items_to_assign = ['shirt', 'pants', 'shoes'];
+			
+			person = pick_but_skip(item_to_skip, items_to_assign, fake_colours, person);
+		} else if (item_choice <= 5){
+			person.hat = fake_colours[0];
+			person.shirt = fake_colours[3];
+			person.pants = fake_colours[4];
+			person.shoes = fake_colours[5];
+		} else if (item_choice <= 8){
+			person.hat = fake_colours[0];
+			person.shirt = fake_colours[2];
+			// Skip one of 3 to 5
+			item_to_skip = item_choice-3;
+			items_to_assign = ['pants', 'shoes'];
+			
+			person = pick_but_skip(item_to_skip, items_to_assign, fake_colours, person);
+		} else if (item_choice <= 9){
+			person.hat = fake_colours[0];
+			person.shirt = fake_colours[1];
+			person.pants = fake_colours[4];
+			person.shoes = fake_colours[5];
+		} else if (item_choice <= 11){
+			person.hat = fake_colours[0];
+			person.shirt = fake_colours[1];
+			person.pants = fake_colours[3];
+			// Skip one of 3 to 5
+			item_to_skip = item_choice-6;
+			items_to_assign = ['shoes'];
+			
+			person = pick_but_skip(item_to_skip, items_to_assign, fake_colours, person);
+		} else {
+			person.hat = fake_colours[0];
+			person.shirt = fake_colours[1];
+			person.pants = fake_colours[2];
+			person.shoes = fake_colours[item_choice-9];
+		}
+		
+        return person;
+    },
+    validator : function(clothing){
+		
+		order = setupinfo['colours'];
+		return (order.indexOf(clothing.hat) < order.indexOf(clothing.shirt) && order.indexOf(clothing.shirt) < order.indexOf(clothing.pants) && order.indexOf(clothing.pants) < order.indexOf(clothing.shoes));
+    },
+    setup : function(){
+		var setupinfo = [];
+		setupinfo['colours'] = shuffle(colours);		
+		return setupinfo;
+	}
+}
+];
 
 stories = [
 	["Chapter One: The Odd Job", "<p>\"This has to be the oddest job we've been given, %PROT%.\"</p> <p>Jed was certainly right. As private investigators, we'd seen some interesting things, but nothing quite as bizarre.</p><p>\"Who has ever heard of an invite-only bank? How can such an exclusive organisation allow in people without any suits and ties? Can't a bank afford a less shabby building?\"</p><p>\"I noticed that too\", I added. \"We'd never fit in, we're too overdressed. We'd best pay a visit to the department store and select some more suitable costumes. Then if we act natural enough, we might be able to just walk in.\"</p>"],
@@ -610,17 +756,14 @@ stories = [
 	
 	["Chapter Six: The Return Return Visit", "<p>The client fell far short of 'explaining everything'. He gave us as little information as possible, and refused to answer further questions. We learned that there was an additional intelligent life form inhabiting the planet. They  masqueraded as humans, aided by their own humanoid form. There was a recent split into two factions: one group desired infiltration for the furthering of the race's goals; the other was bent on destruction of the human race. Thankfully our client fell into the former category.</p><p>\"How's '%PROT% and Jed, saviours of the world'?\" I suggested. \"It's got a nice ring to it\".</p><p>Jed ignored me. \"And we've arrived back at the bank,\" he announced. \"Whatever is in those packages must be important.\"</p>"],
 	
-	["Chapter Seven: A Blank Book", "<p>\"We really should've thought of that,\" I confessed to Jed. \"Why would we ever think we could read another race's writing?\"</p><p>\"No, <em>HE</em> should have thought of that, not us, %PROT%.\" replied Jed, flicking through the 'code book' consisting of extremely thick pages with no visible writing. \"Do you get the feeling someone's playing a bit joke on us?\"</p><p>\"If someone is playing a joke, that's fine by me, given the sizeable payments we've already received.\"</p><p>\"I wonder how old the book is,\" said Jed, leaning in to smell. \"PHWOAR!\" he exclaimed, jerking back, \"It's really strong!\"</p><p>\"That's it!\" I realised. \"He said their smell is better than their sight - it makes sense their code book would be communicated in smells! We just need to figure out what each smell means. Then we can look up the code we were given, and see what to wear.\"</p><p>\"... Or we could just watch what people are wearing, again.\" reasoned Jed.</p><p>\"Yeah ok that seems simpler.\"</p>"], 
+	["Chapter Seven: A Blank Book", "<p>\"We really should've thought of that,\" I confessed to Jed. \"Why would we ever think we could read the writing of another species?\"</p><p>\"No, <em>HE</em> should have thought of that, not us, %PROT%.\" replied Jed, flicking through the 'code book' consisting of extremely thick pages with no visible writing. \"Do you get the feeling someone's playing a big joke on us?\"</p><p>\"If someone is playing a joke, that's fine by me, given the sizeable payments we've already received.\"</p><p>\"I wonder how old the book is,\" said Jed, leaning in to smell. \"PHWOAR!\" he exclaimed, jerking back, \"It's really strong!\"</p><p>\"That's it!\" I realised. \"He said their smell is better than their sight - it makes sense their code book would be communicated in smells! We just need to figure out what each smell means. Then we can look up the code we were given, and see what to wear.\"</p><p>\"... Or we could just watch what people are wearing, again.\" reasoned Jed.</p><p>\"Yeah ok that seems simpler.\"</p>"], 
 	
 	["Chapter Eight: The Fourth Visit", "<p>\"I wish they didn't keep changing the dress code. It would make things so much easier for us.\" complained Jed.</p><p>\"If they didn't change the code you could just keep guessing it by trying different clothes.\" I suggested.</p><p>\"Then why don't they pick a better security method? Like a passphrase, or ID?\"</p><p>\"Passphrases can be overheard. Their eyesight might not be good enough to check IDs. If their pattern recognition is worse than ours, maybe a dress code is strong enough security for them.\"</p><p>\"Good points.\" said Jed. He scanned the line. \"I think I can see today's pattern.\"</p>"], 
 	
 	["Chapter Nine: The Last Piece", "<p>We approached the target building in the required costumes: purple hat and yellow shoes.</p><p>\"Something's not right,\" Jed whispered. \"Nobody else fits the pattern. Either the client smelt the code book index wrong, or the dress code was changed.\"</p><p>\"You're right. We should have known it wouldn't be that simple. We'll just have to crack the code ourselves.\"</p><p>\"Because my trash can doesn't already have enough green shoes.\" grumbled Jed sarcastically.</p>"],
 
     ["Chapter Ten: The Detonator!", "<p>It wasn't hard to spot the 'secret' base. It was the only building across the road with a line of bright colours queuing to enter.</p><p>\"We need to be quick,\" I urged, \"We don't know how much time there is left.\"</p><p>\"Stay calm, %PROT%, we need to concentrate.\" said Jed. \"Bob whatever said this would be a difficult code.\"</p><p>\"Put on this cologne,\" he added. \"We should mask our smell to avoid identification.\"</p>"],
-    ["Chapter Eleven: A Lack of Recognition", "<p>On return to the client's office building, we were barred entry.</p><p>\"It's the cologne,\" I suggested, \"Our smell isn't recognised anymore.\"</p><p>\"Looks like we're cracking another dress code\" sighed Jed.</p>"],
-    ["Test", "Testing here."],
-    ["Test", "Testing here."],
-    ["Test", "Testing here."],
+    ["Chapter Eleven: A Lack of Recognition", "<p>On return to the client's office building, we were barred entry.</p><p>\"It's the cologne,\" I suggested, \"Our smell isn't recognised anymore.\"</p><p>\"Looks like we're cracking another dress code\" sighed Jed.</p>"]
 ];
 
 failures = ["<h1>No Entry</h1><p>As Jed and I approached the back of the queue, sporting our brand new costumes, the rest of the line fell silent. As the queue progressed, Jed pulled me aside.</p><p>\"Do you notice the guards are staring at us? I don't think they're going to allow us in.\"</p><p>\"You're right; they seem to be able to tell us apart. There must be a pattern that everyone else is following that we just don't fit. Perhaps we need to revisit the costume store and buy costumes that fit in.\"</p>"];
@@ -682,8 +825,10 @@ hints = [
 "While there was an order on the colours, there seem to be disagreement on how to apply the order."],
 // Level 11
 ["\"There seems to be a relationship between the bottom half and the top half,\" observed Jed.", 
-"There were two relationships between the bottom half and the top half of their costumes. One for whether to wear a hat, another for whether to wear a shirt."]
-
+"There were two relationships between the bottom half and the top half of their costumes. One for whether to wear a hat, another for whether to wear a shirt."],
+// Level 12
+["\"Is there some sort of order happening?\" asked Jed.", 
+"You seemed to notice a pattern in the colours of clothes going from top to bottom."]
 
 
 ]

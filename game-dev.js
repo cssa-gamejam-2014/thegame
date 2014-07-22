@@ -1,18 +1,45 @@
+var tagBody = '(?:[^"\'>]|"[^"]*"|\'[^\']*\')*';
 
-camera = {
-	// distances in metres
-	// "top" and "right" are both screen edge locations in world form
-	left: -1,
-	top: 1,
-	// pixels per metre
-	zoom: 150,
-	// width and height in pixels
-	width: 0,
-	height: 0,
-};
-people = [];
-last_person_spawn_time = 0;
-spawn_rate = 0.5;
+var tagOrComment = new RegExp(
+    '<(?:'
+    // Comment body.
+    + '!--(?:(?:-*[^->])*--+|-?)'
+    // Special "raw text" elements whose content should be elided.
+    + '|script\\b' + tagBody + '>[\\s\\S]*?</script\\s*'
+    + '|style\\b' + tagBody + '>[\\s\\S]*?</style\\s*'
+    // Regular name
+    + '|/?[a-z]'
+    + tagBody
+    + ')>',
+    'gi');
+function removeTags(html) {
+  var oldHtml;
+  do {
+    oldHtml = html;
+    html = html.replace(tagOrComment, '');
+  } while (html !== oldHtml);
+  return html.replace(/</g, '&lt;');
+}
+
+//http://www.w3schools.com/js/js_cookies.asp
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+} 
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 var TARGET_FRAMERATE=25;
 var SPEED = 80;
 var WALK_WIDTH = null;
@@ -270,15 +297,11 @@ function deselectChoice(id){
 
 var frameDrawer;
 var currentLevel = 0;
-var setupinfo = false
+var setupinfo = false;
 if (window.location.hash){
-	var protagonist = escape(window.location.hash.replace("#", ""));
+	var protagonist = removeTags(window.location.hash.replace("#", ""));
 } else {
 	var protagonist = null;
-}
-// Let Katie go to level 11
-if (protagonist == 'Katie'){
-	currentLevel = 10;
 }
 var storyTime = true;
 var finishedLevel = false;
@@ -350,30 +373,69 @@ function setUpGameScreen(){
 }
 
 function setUpStoryScreen(){
-    titleAndStory = stories[currentLevel];
-    title = titleAndStory[0];
-    story = titleAndStory[1];
-	story = story.replace("%PROT%", protagonist);
-	failure = failures[0].replace("%PROT%", protagonist);
-	success = successes[currentLevel].replace("%PROT%", protagonist);
 	
-    $("#backtext").html(title);
+	if (stories[currentLevel] == null){
+		
+		// Put up correct backdrop
+		$('#groundfloor').attr('src', $('#'+buildings[9][0]).attr('src'));
+		$('#windows').attr('src', $('#'+buildings[9][1]).attr('src'));
+		
+		title = "Chapter "+(currentLevel+1)
+		story = "<p>You've saved the world, but you're itching to break into some more buildings! Can you crack the code?</p>";
+	} else {
+		// Put up correct backdrop
+		$('#groundfloor').attr('src', $('#'+buildings[currentLevel][0]).attr('src'));
+		$('#windows').attr('src', $('#'+buildings[currentLevel][1]).attr('src'));
+		
+		titleAndStory = stories[currentLevel];
+		title = titleAndStory[0];
+		story = titleAndStory[1];
+		
+	}
+	story = story.replace("%PROT%", protagonist);
+	$("#backtext").html(title);
 	$('#storyscreen').html("<h1>"+title+"</h1>"+story);
+	failure = failures[0].replace("%PROT%", protagonist);
 	$('#failurescreen').html(failure);
-	$('#successscreen').html(success);
+	if (successes[currentLevel] == null){
+		$('#successscreen').html("<h1>Success!</h1><p>You solved the puzzle!</p>");
+	} else {
+		success = successes[currentLevel].replace("%PROT%", protagonist);
+		$('#successscreen').html(success);
+	}
 }
+
+function boot_up_level(){
+	// Set up info for the level
+	if (levels[currentLevel].setup){
+		setupinfo = levels[currentLevel].setup();
+	}
+	setUpStoryScreen();
+	setUpGameScreen();
+}
+
 var scenes = {"story":0, "store":1, "hint":2, "failure":3, "success":4};
-var sceneIDs = {"name": '#namescreen', "story":'#storyscreen', "store":'#gamescreen', "hint":'#hintscreen', "failure":'#failurescreen', "success":'#successscreen'};
+var sceneIDs = {"name": '#namescreen', "story":'#storyscreen', "store":'#gamescreen', "hint":'#hintscreen', "failure":'#failurescreen', "success":'#successscreen', "endgame":'#endscreen'};
 currentScene = null;
 chromeFirstRedraw = true;
 function transitionScene(nextScene){
 	switch(currentScene){
 		case scenes.name:
-			protagonist = escape($('#username').val());
+			protagonist = removeTags($('#username').val());
+			
+			// Check they haven't just entered nothing
+			if (protagonist == ''){
+				$("#next").removeClass("ui-state-disabled");
+				break;
+			}
+			
+			if (getCookie(protagonist) != ""){
+				currentLevel = parseInt(getCookie(protagonist));
+			} 
+			
 			$('#namescreen').slideUp(function(){
+				boot_up_level();
 				transitionSceneTo(nextScene);
-				setUpStoryScreen();
-				setUpGameScreen();
 				framesDrawer = window.setInterval(draw_frame, 1000 / TARGET_FRAMERATE);
 			});
 			break;
@@ -415,22 +477,11 @@ function transitionScene(nextScene){
 			// Prevent double clicking
 			$("#next").addClass("ui-state-disabled");
 			
-			// Set up info for next level
-			if (levels[currentLevel+1].setup){
-				setupinfo = levels[currentLevel+1].setup();
-			}
-			
 			// Progress to next level
 			currentLevel++;
 			
-			// Put up correct backdrop
-			$('#groundfloor').attr('src', $('#'+buildings[currentLevel][0]).attr('src'));
-			$('#windows').attr('src', $('#'+buildings[currentLevel][1]).attr('src'));
-			
-			
 			$('#successscreen').slideUp(function(){
-				setUpStoryScreen();
-				setUpGameScreen();
+				boot_up_level();
 				transitionSceneTo(nextScene);
 			});
 			break;
@@ -495,6 +546,8 @@ function transitionSceneTo(nextScene){
 		case scenes.success:
 			// Got the puzzle right
 			
+			setCookie(protagonist,currentLevel+1,365);
+			
 			// Clear hint timers
 			window.clearTimeout(hint1timer);
 			window.clearTimeout(hint2timer);
@@ -509,6 +562,9 @@ function transitionSceneTo(nextScene){
 			
 			if (currentLevel+1 >= levels.length){
 				$('#successscreen').slideDown(function(){
+					console.log('current level is '+currentLevel);
+					console.log(currentLevel+1 >= levels.length);
+					console.log(levels.length);
 					endTheGame();
 				});
 			} else {
@@ -530,7 +586,11 @@ function transitionSceneTo(nextScene){
 function endTheGame(){
 	clearInterval(framesDrawer);
 	$('#nexttext').text('You won the game!');
-	$("#next").addClass("ui-state-disabled");
+	$('#successscreen').slideUp(function(){
+		$('#successscreen').html('<h1>Well done!</h1><p>You\'ve finished all of the levels so far! You are a solid code cracker!</p>');
+		$('#successscreen').slideDown();
+	});
+	$("#next").hide();
 }
 
 function showHintButton(number){
@@ -569,8 +629,8 @@ $(document).ready(function(){
 		// Banish the heading for more space
 		$('#heading').slideUp();
 		
-		// Success goes to Story
-		if (currentScene == scenes.success){
+		// Success or entered name goes to Story
+		if (currentScene == scenes.success || currentScene == scenes.name){
 			transitionScene(scenes.story);
 		// If in store, check if guesses are correct
 		} else if (currentScene == scenes.store){
@@ -628,8 +688,7 @@ $(document).ready(function(){
 		transitionSceneTo(scenes.name);
 	} else {
 		transitionSceneTo(scenes.story);
-		setUpStoryScreen();
-		setUpGameScreen();
+		boot_up_level();
 		framesDrawer = window.setInterval(draw_frame, 1000 / TARGET_FRAMERATE);
 	}
 
